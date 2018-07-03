@@ -1,5 +1,5 @@
 import numpy as np
-ttest gittttt
+
 def adjmat(a):
     length = 4 + len(a)
     m = np.zeros((length,length))
