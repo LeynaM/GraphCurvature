@@ -16,19 +16,19 @@ def one_ball(a1):
     m1[1:5, 0] = 1
     for n in range(6):
         if a1[n] == 1:
-            m1[i[n]][j[n]] = a1[n]
-            m1[j[n]][i[n]] = a1[n]
+            m1[i[n], j[n]] = a1[n]
+            m1[j[n], i[n]] = a1[n]
     return m1
 
 def two_ball(a2, m):
     for i in range(len(a2)):
         if type(a2[i]) is int:
-            m[i+5][a2[i]] = 1
-            m[a2[i]][i+5] = 1
+            m[i+5, a2[i]] = 1
+            m[a2[i], i+5] = 1
         else:
             for j in range(len(a2[i])):
-                m[i+5][a2[i][j]] = 1
-                m[a2[i][j]][i+5] = 1
+                m[i+5, a2[i][j]] = 1
+                m[a2[i][j], i+5] = 1
 
 A = adjmat(((1,1,0,0,1,0), (2, 3), (1, 4), (3), (4)))
 
