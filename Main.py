@@ -1,9 +1,10 @@
 import numpy as np
 
 def adjmat(a):
-    length = 5 + len(a)
+    length = 4 + len(a)
     m = np.zeros((length,length))
     m[0:5,0:5] = one_ball(a[0])
+    two_ball(a[1:], m)
     return m
 
 
@@ -19,7 +20,16 @@ def one_ball(a1):
             m1[j[n]][i[n]] = a1[n]
     return m1
 
-print adjmat(((1,1,1,0,0,0),(0)))
 
+
+def two_ball(a2, m):
+    for i in range(len(a2)):
+        for j in range(len(a2[i])):
+            m[i+5][a2[i][j]] =  1
+            m[a2[i][j]][i+5] =  1
+            m[i+5][i+5] = 1
+                
+
+print adjmat(((1,1,1,0,0,0),(2,3),(3,4)))
 
 
