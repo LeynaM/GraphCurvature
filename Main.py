@@ -41,4 +41,4 @@ A = adjmat(((1,1,0,0,1,0), (2, 3), (1, 4), (3), (4)))
 #                m[j+1][i+5] = 1
              
 
-print A#, curve.curv_calc(A, 0)
+print A, curve.curv_calc(A, 0)
