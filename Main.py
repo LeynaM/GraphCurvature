@@ -78,15 +78,47 @@ def s1outreg2(G):
 
 #print s1outreg2(((1,1,0,0,1,0), (0,1,1,0), (1,1,0,1)))
 
+def avoutx(G):
+    g = G[1:]
+    s = np.zeros(len(g))
+    for i in range(len(g)):
+        if type(g[i]) is int:
+            s[i] = 1
+        else:
+            s[i] = len(g[i])
+    total = sum(s)
+    return 0.25*total
+
+#print avoutx(((1,1,0,0,1,0), (2, 1), (1, 4, 3), (2)))
+
+def outdeg(G, y):
+    g = G[1:]
+    n = 0
+    for i in range(len(g)):
+        if type(g[i]) is int:
+            if g[i] == y:
+                n +=1
+        else:
+            for j in range(len(g[i])):
+                if g[i][j] == y:
+                    n +=1
+    return n
+
+def avoutx2(G):
+    s = np.zeros(4)
+    for i in range(1,5):
+        s[i-1] = outdeg(G, i)
+    return 0.25*sum(s)
+
+#print avoutx2(((1,1,0,0,1,0), (2, 1), (1, 4, 3), (2)))
+
+#print outdeg(((1,1,0,0,1,0), (2, 1,3), (1, 4, 3), (2)), 3)
 
 def curvesharp(G):
+    if curve.curv_calc(adjmat(G), 0) == 0.5*(7-avoutx(G)):
+        return 'True'
+    else:
+        return 'False'
 
-
-
-
-
-
-
-
-
+print curvesharp(((1,1,0,0,1,0), (2, 1), (1, 4, 3), (2)))
 
