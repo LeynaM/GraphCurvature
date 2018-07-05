@@ -30,7 +30,8 @@ def two_ball(a2, m):
                 m[i+5, a2[i][j]] = 1
                 m[a2[i][j], i+5] = 1
 
-G = ((1,1,0,0,1,0), (2, 3), (2, 4))
+G = ((1,1,0,0,1,0), (0,1,1,0), (1,0,0,1))
+
 A = adjmat(((1,1,0,0,1,0), (2, 3), (1, 4), (3), (4)))
 
 #def two_ball2(a2, m):
@@ -45,42 +46,42 @@ A = adjmat(((1,1,0,0,1,0), (2, 3), (1, 4), (3), (4)))
 #print A, curve.curv_calc(A, 0)
 
 def s1outreg(G):
-    l = []
-    for k in range(1, 5):
-        n = 0
-        for i in range(1,len(G[1:])):
-            for j in range(len(G[i])):
-                if G[i][j] == k:
-                    n =+ 1
-                else:break
+    g = G[1:]
+    freq = np.zeros(4)
+    for i in range(len(g)):
+        if type(g[i]) is int:
+            freq[g[i]-1] += 1
+        else:
+            for j in range(len(g[i])):
+                freq[g[i][j]-1] += 1
+    s1 = True
+    for i in range(4):
+        if freq[i] != freq[0]:
+            s1 = False
+    return s1
 
-        l.append(n)
-    for i in range(len(l)):
-        for j in range(len(l)):
-            if l[i] != l[j]:
-                return 'No'
-            else:
-                return 'yes'
-#print s1outreg(G)
+#print s1outreg(((1,1,0,0,1,0), (2, 1), (1, 4)))
 
-def outreg(G):
-    l = G[1:]
-    s=[[]]
-    for k in range(1, 5):
-        n = 0
-        r= []
-        for i in range(len(l)):
-            for j in range(len(l[i])):
-                if l[i][j] == k:
-                    n +=1
-                    s.append(n)
-    for i in range(len(s)):
-        for j in range(len(s)):
-            if s[i] != s[j]:
-                return 'No'
-            else:
-                return 'Yes'
-print outreg(G)
+
+def s1outreg2(G):
+    g = G[1:]
+    m = np.zeros((len(g),4))
+    for i in range(len(g)):
+        m[i] = g[i]
+    freq = m.sum(axis = 0)
+    s1 = True
+    for i in range(4):
+        if freq[i] != freq[0]:
+            s1 = False
+    return s1
+
+
+#print s1outreg2(((1,1,0,0,1,0), (0,1,1,0), (1,1,0,1)))
+
+
+def curvesharp(G):
+
+
 
 
 
