@@ -7,8 +7,32 @@ def summary(g):
     outdegree = outdeg(g[1:])
     s1out = s1outreg(outdegree)
     curve_sharp = curvesharp(curvature, outdegree)
-    print "\nCurvature: %.3f\nS1 out-reg: %s\nCurvature-sharp: %s" % (curvature, s1out, curve_sharp)
+    print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curvature, s1out, curve_sharp)
     return
+
+def norm(g):
+    gnorm = [[0 for i in range(4)] for i in range(1,len(g)+1)]
+    gnorm[0] = [g[0][i] for i in range(len(g[0]))]
+    g2 = g[1:]
+    for j in range(4):
+        for i in range(len(g2)):
+            if j+1 in g2[i]:
+                gnorm[i+1][j] = 1
+    return gnorm
+
+def normalise(g):
+    l = [[0 for i in range(1)] for i in range(4)]
+    adjmatrix = adjmat(g)
+    g = [[g[i][j] for j in range(len(g[i]))] for i in range(len(g))]
+    for i in range(len(l)):
+        l[i] = [sum(adjmatrix[i+1])]
+        l[i][0] = 4 - (l[i][0])
+    for i in range(4):
+        if l[i] != [0]:
+            for j in range(int(l[i][0])):
+                g.append([i+1])
+    return norm(g)
+
 
 def adjmat(g):
     length = 4 + len(g)
@@ -16,6 +40,7 @@ def adjmat(g):
     m[0:5,0:5] = one_ball(g[0])
     two_ball(g[1:], m)
     return m
+
 
 def one_ball(g1):
     m1 = np.zeros((5,5))
@@ -63,7 +88,9 @@ def curvesharp(curve, outdeg):
     else:
         return 'False'
 
-summary(((1,1,1,1,0,0),(2,3,4),(4)))
+print normalise(((1,0,0,0,0,0), (2,4), (1,3)))
+
+#summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
 # def two_ball2(a2, m):
 #    for i in range(len(a2)):
