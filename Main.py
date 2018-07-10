@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import permutations
 import time
 import CurvatureCalculator as curve
 
@@ -103,12 +104,35 @@ def outdeg(g2):
 def curvesharp(curve, outdeg):
     k = (7 - 0.25 * sum(outdeg)) * 0.5
     if curve == k:
-        return 'True'
+        return True
     else:
-        return 'False'
+        return False
 
 
-print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
+def iso(g1, g2):
+    if len(g1) != len(g2):
+        return False
+    else:
+        for i in g1[1:]:
+            if i not in g2[1:]:
+                return False
+        p = list(permutations([0, 1, 2, 3]))
+        m1 = one_ball(g1[0])
+        m2 = one_ball(g2[0])
+        m1_one = m1[1:, 1:]
+        m2_one = m2[1:, 1:]
+        for i in p:
+            m1_one_new = m1_one[i, :]
+            m1_one_new = m1_one_new[:, i]
+            if np.array_equal(m1_one_new, m2_one):
+                return True
+        return False
+
+
+
+print iso(((1, 0, 1, 1, 0, 1), (1, 2), (4), (3)), ((1, 1, 0, 0, 1, 1), (1, 2), (4), (3)))
+
+# print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
