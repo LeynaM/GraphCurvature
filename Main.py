@@ -145,7 +145,10 @@ def generate(g):
     parts = part(n)
     for a in parts:
             if max(b) > len(a):
-                return False
+                SOMETHING
+
+
+
 
 
 

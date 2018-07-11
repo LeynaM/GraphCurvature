@@ -22,8 +22,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="131" lean-forward="true" selection-start-line="131" selection-end-line="131" />
+            <state relative-caret-position="-923">
+              <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -304,7 +304,14 @@
       <option name="project" value="LOCAL" />
       <updated>1531232113695</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="standardised improved">
+      <created>1531338809662</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1531338809662</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -351,7 +358,8 @@
     <MESSAGE value="tidied" />
     <MESSAGE value="normalised" />
     <MESSAGE value="normalised, standard" />
-    <option name="LAST_COMMIT_MESSAGE" value="normalised, standard" />
+    <MESSAGE value="standardised improved" />
+    <option name="LAST_COMMIT_MESSAGE" value="standardised improved" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -655,8 +663,8 @@ y = next(e)</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="131" lean-forward="true" selection-start-line="131" selection-end-line="131" />
+        <state relative-caret-position="-923">
+          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
