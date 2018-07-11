@@ -39,7 +39,9 @@ def norm(g):
 def standardise(g):
     l = [[0 for i in range(1)] for i in range(4)]
     adjmatrix = adjmat(g)
-    g = [[g[i][j] for j in range(len(g[i]))] for i in range(len(g))]
+    for i in range(len(g)):
+        if type(g[i]) is int:
+            g.remove(g[i])
     for i in range(len(l)):
         l[i] = [sum(adjmatrix[i + 1])]
         l[i][0] = 4 - (l[i][0])
@@ -92,7 +94,7 @@ def s1outreg(outdeg):
 
 def outdeg(g2):
     outdeg = np.zeros(4)
-    for i in range(len(g2)):
+    for i in range(1,len(g2)):
         if type(g2[i]) is int:
             outdeg[g2[i] - 1] += 1
         else:
@@ -110,6 +112,8 @@ def curvesharp(curve, outdeg):
 
 
 def iso(g1, g2):
+    g1 = standardise(g1)
+    g2 = standardise(g2)
     if len(g1) != len(g2):
         return False
     else:
@@ -129,8 +133,30 @@ def iso(g1, g2):
         return False
 
 
+def part(n):
+    l = [i for i in range(1,int(n+1))]
+    return [[1,1,2]]
 
-print iso(((1, 0, 1, 1, 0, 1), (1, 2), (4), (3)), ((1, 1, 0, 0, 1, 1), (1, 2), (4), (3)))
+
+def generate(g):
+    a_1 = [[1], [2], [3], [4]]
+    a_2 = [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
+    a_3 = [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
+    a_4 = [[1, 2, 3, 4]]
+    b = outdeg(standardise(g))
+    n = sum(b)
+    parts = part(n)
+    for a in parts:
+            if max(b) > len(a):
+                return False
+
+
+
+
+print generate([[1, 0, 1, 0, 0, 1]])
+
+#print standardise([[1, 0, 1, 1, 0, 1], [1, 2]])
+#print iso([[0, 1, 1, 1, 1, 0], [1, 2], [4]], [[1, 1, 0, 0, 1, 1], [1, 2], [4], [3]])
 
 # print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
 
