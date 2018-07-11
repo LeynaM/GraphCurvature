@@ -37,17 +37,14 @@ def norm(g):
 
 
 def standardise(g):
-    l = [[0 for i in range(1)] for i in range(4)]
     adjmatrix = adjmat(g)
     for i in range(len(g)):
         if type(g[i]) is int:
             g.remove(g[i])
-    for i in range(len(l)):
-        l[i] = [sum(adjmatrix[i + 1])]
-        l[i][0] = 4 - (l[i][0])
     for i in range(4):
-        if l[i] != [0]:
-            for j in range(int(l[i][0])):
+        col = 4 - sum(adjmatrix[i + 1])
+        if col != 0:
+            for j in range(int(col)):
                 g.append([i + 1])
     return g
 
@@ -153,12 +150,12 @@ def generate(g):
 
 
 
-print generate([[1, 0, 1, 0, 0, 1]])
+#print generate([[1, 0, 1, 0, 0, 1]])
 
 #print standardise([[1, 0, 1, 1, 0, 1], [1, 2]])
 #print iso([[0, 1, 1, 1, 1, 0], [1, 2], [4]], [[1, 1, 0, 0, 1, 1], [1, 2], [4], [3]])
 
-# print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
+print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
