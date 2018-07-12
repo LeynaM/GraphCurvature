@@ -149,16 +149,22 @@ def generate(g):
 
 
 
+g = [[0, 0, 1, 1, 0, 0], [1, 2], [3], [2, 3, 4]]
+h = standardise(g)
+
+test=[1]
+for i in range(len(test)):
+    print test[i]
 
 
-
+#print outdeg(h)
 
 #print generate([[1, 0, 1, 0, 0, 1]])
 
 #print standardise([[1, 0, 1, 1, 0, 1], [1, 2]])
 #print iso([[0, 1, 1, 1, 1, 0], [1, 2], [4]], [[1, 1, 0, 0, 1, 1], [1, 2], [4], [3]])
 
-print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
+#print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
