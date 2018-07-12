@@ -38,9 +38,6 @@ def norm(g):
 
 def standardise(g):
     adjmatrix = adjmat(g)
-    for i in range(len(g)):
-        if type(g[i]) is int:
-            g.remove(g[i])
     for i in range(4):
         col = 4 - sum(adjmatrix[i + 1])
         if col != 0:
@@ -90,19 +87,16 @@ def s1outreg(outdeg):
 
 
 def outdeg(g2):
-    outdeg = np.zeros(4)
+    outdeg = np.ones(4)
     for i in range(1,len(g2)):
-        if type(g2[i]) is int:
-            outdeg[g2[i] - 1] += 1
-        else:
-            for j in range(len(g2[i])):
-                outdeg[g2[i][j] - 1] += 1
+        for j in range(1,len(g2[i])):
+            outdeg[g2[i][j] - 1] += 1
     return outdeg
 
 
 def curvesharp(curve, outdeg):
     k = (7 - 0.25 * sum(outdeg)) * 0.5
-    if curve == k:
+    if abs(curve - k) <= 1e-6 :
         return True
     else:
         return False
@@ -111,12 +105,12 @@ def curvesharp(curve, outdeg):
 def iso(g1, g2):
     g1 = standardise(g1)
     g2 = standardise(g2)
-    if len(g1) != len(g2):
+    a = g1[1:]
+    b = g2[1:]
+    len_a = len(a)
+    if len_a != len(b):
         return False
     else:
-        for i in g1[1:]:
-            if i not in g2[1:]:
-                return False
         p = list(permutations([0, 1, 2, 3]))
         m1 = one_ball(g1[0])
         m2 = one_ball(g2[0])
@@ -126,9 +120,35 @@ def iso(g1, g2):
             m1_one_new = m1_one[i, :]
             m1_one_new = m1_one_new[:, i]
             if np.array_equal(m1_one_new, m2_one):
-                return True
+
+                for j in range(len_a):
+                    for k in range(len(a[j])):
+                        a[j][k] = i[a[j][k]-1] + 1
+                for i in range(len_a):
+                    a[i].sort()
+                    b[i].sort()
+                a.sort()
+                b.sort()
+                if a == b:
+                    return True
         return False
 
+def iso2(g1,g2):
+    g1 = standardise(g1)
+    g2 = standardise(g2)
+    if len(g1) != len(g2):
+        return False
+    else:
+        p = list(permutations([0, 1, 2, 3]))
+        m1 = one_ball(g1[0])
+        for i in p:
+            m1_new = m1[i, :]
+            m1_new = m1_new[:, i]
+            m1adj = two_ball(g1,m1_new)[i,:]
+            m1adj = two_ball(g1, m1_new)[:,i]
+            if np.array_equal(m1adj, adjmat(g2)):
+                return True
+        return False
 
 def part(n):
     l = [i for i in range(1,int(n+1))]
@@ -151,20 +171,25 @@ def generate(g):
 
 g = [[0, 0, 1, 1, 0, 0], [1, 2], [3], [2, 3, 4]]
 h = standardise(g)
+#summary(h)
 
-test=[1]
-for i in range(len(test)):
-    print test[i]
 
+
+a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
+print ""
+print ""
+b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
+
+print iso(a,b)
 
 #print outdeg(h)
 
 #print generate([[1, 0, 1, 0, 0, 1]])
 
 #print standardise([[1, 0, 1, 1, 0, 1], [1, 2]])
-#print iso([[0, 1, 1, 1, 1, 0], [1, 2], [4]], [[1, 1, 0, 0, 1, 1], [1, 2], [4], [3]])
+#print iso2([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]], [[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
-#print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3]])
+#print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3], [4]])
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
