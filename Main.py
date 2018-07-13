@@ -49,21 +49,21 @@ def standardise(g):
 def adjmat(g):
     length = 4 + len(g)
     m = np.zeros((length, length))
-    m[0:5, 0:5] = one_ball(g[0])
+    m[0, 1:5] = 1
+    m[1:5, 0] = 1
+    m[1:5, 1:5] = one_ball(g[0])
     two_ball(g[1:], m)
     return m
 
 
 def one_ball(g1):
-    m1 = np.zeros((5, 5))
+    m1 = np.zeros((4, 4))
     i = (1, 1, 1, 2, 2, 3)
     j = (2, 3, 4, 3, 4, 4)
-    m1[0, 1:5] = 1
-    m1[1:5, 0] = 1
     for n in range(6):
         if g1[n] == 1:
-            m1[i[n], j[n]] = g1[n]
-            m1[j[n], i[n]] = g1[n]
+            m1[i[n]-1, j[n]-1] = g1[n]
+            m1[j[n]-1, i[n]-1] = g1[n]
     return m1
 
 
@@ -87,9 +87,9 @@ def s1outreg(outdeg):
 
 
 def outdeg(g2):
-    outdeg = np.ones(4)
+    outdeg = [0, 0, 0, 0]
     for i in range(1,len(g2)):
-        for j in range(1,len(g2[i])):
+        for j in range(len(g2[i])):
             outdeg[g2[i][j] - 1] += 1
     return outdeg
 
@@ -114,12 +114,10 @@ def iso(g1, g2):
         p = list(permutations([0, 1, 2, 3]))
         m1 = one_ball(g1[0])
         m2 = one_ball(g2[0])
-        m1_one = m1[1:, 1:]
-        m2_one = m2[1:, 1:]
         for i in p:
-            m1_one_new = m1_one[i, :]
-            m1_one_new = m1_one_new[:, i]
-            if np.array_equal(m1_one_new, m2_one):
+            m1_new = m1[i, :]
+            m1_new = m1_new[:, i]
+            if np.array_equal(m1_new, m2):
 
                 for j in range(len_a):
                     for k in range(len(a[j])):
@@ -133,55 +131,89 @@ def iso(g1, g2):
                     return True
         return False
 
-def iso2(g1,g2):
-    g1 = standardise(g1)
-    g2 = standardise(g2)
-    if len(g1) != len(g2):
-        return False
-    else:
-        p = list(permutations([0, 1, 2, 3]))
-        m1 = one_ball(g1[0])
-        for i in p:
-            m1_new = m1[i, :]
-            m1_new = m1_new[:, i]
-            m1adj = two_ball(g1,m1_new)[i,:]
-            m1adj = two_ball(g1, m1_new)[:,i]
-            if np.array_equal(m1adj, adjmat(g2)):
-                return True
-        return False
 
-def part(n):
-    l = [i for i in range(1,int(n+1))]
-    return [[1,1,2]]
+
+def part(n, g):
+    b = outdeg(standardise(g))
+    l = []
+    for i in range(len(b)):
+        if b[i] != 0:
+            l.append(i+1)
+    if n == 0:
+        return 0
+    else:
+        if n in l:
+            m = ((n))
+        else:
+            m = ()
+        #while n-i >= 0:
+        #    for i in l:
+        #        m = [i]
+        #        m += part(n-i, g)
+        #        #m += i
+        for i in range(1,n):
+            for j in part(n-i, g):
+                m.sort()
+                m += sorted(((i,) + j))
+        return m
+
+def partition(n, g):
+    b = outdeg(standardise(g))
+    l = []
+    for i in range(len(b)):
+        if b[i] != 0:
+            l.append(i + 1)
+    m = []
+    if n<= len(l):
+        m.append([n])
+    for x in range(1, n):
+        for y in partition(n - x, g):
+            if x <= len(l):
+                s = sorted([x] + y)
+                if s not in m:
+                    m.append(s)
+    return m
+
+
+
+[[1, 1, 1, 2], [1, 1, 1, 1, 1], [1, 2, 2], [1, 1, 3], [2, 3], [1, 4]]
+
 
 
 def generate(g):
+    oneballs = [[0, 0, 0, 0, 0, 0,], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+                [1, 1, 1, 0, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
     a_1 = [[1], [2], [3], [4]]
     a_2 = [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
     a_3 = [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
     a_4 = [[1, 2, 3, 4]]
     b = outdeg(standardise(g))
     n = sum(b)
-    parts = part(n)
+    parts = partition(n, g)
     for a in parts:
-            if max(b) > len(a):
-                SOMETHING
+            if max(b) <= len(a):
+                for i in range(len(a)):
+                    if a[i] > 4:
 
 
 
-g = [[0, 0, 1, 1, 0, 0], [1, 2], [3], [2, 3, 4]]
+
+
+
+
+g = [[0, 0, 1, 1, 0, 0]]
 h = standardise(g)
-#summary(h)
+
 
 
 
 a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
-print ""
-print ""
+
 b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
-
-print iso(a,b)
-
+g = (standardise([[0, 1, 1, 1, 0, 1]]))
+#print part(5, g)
+#print partition(6, g)
 #print outdeg(h)
 
 #print generate([[1, 0, 1, 0, 0, 1]])

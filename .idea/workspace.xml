@@ -13,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1531388208747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1531502589179" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$thebestytestywesty.coverage" NAME="thebestytestywesty Coverage Results" MODIFIED="1531135915744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$testywesty.coverage" NAME="testywesty Coverage Results" MODIFIED="1530895487250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -22,8 +22,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2037">
-              <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+            <state relative-caret-position="355">
+              <caret line="176" lean-forward="true" selection-start-line="176" selection-end-line="176" />
             </state>
           </provider>
         </entry>
@@ -106,7 +106,7 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="1280" />
+    <option name="width" value="638" />
     <option name="height" value="800" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -315,7 +315,21 @@
       <option name="project" value="LOCAL" />
       <updated>1531343436894</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="added test">
+      <created>1531390173317</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1531390173318</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fixed iso">
+      <created>1531400498608</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1531400498608</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -325,16 +339,16 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50130206" side_tool="true" weight="0.32" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4986979" visible="true" weight="0.24074075" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4986979" visible="true" weight="0.2934473" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32982457" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32827586" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3263158" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.104200326" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="right" id="SciView" order="4" weight="0.86591274" />
+      <window_info anchor="right" id="SciView" order="4" weight="0.3546042" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39601138" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3931624" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -364,7 +378,9 @@
     <MESSAGE value="normalised, standard" />
     <MESSAGE value="standardised improved" />
     <MESSAGE value="don't return false" />
-    <option name="LAST_COMMIT_MESSAGE" value="don't return false" />
+    <MESSAGE value="added test" />
+    <MESSAGE value="fixed iso" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed iso" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -384,26 +400,6 @@
           <line>11</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>110</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>123</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="46" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -412,61 +408,56 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="47" />
+      <option name="time" value="66" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
-        <expression-string>m111 = adjmat(g1)</expression-string>
+        <expression-string>import operator
+lista.sort()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>i += 1</expression-string>
+        <expression-string>import operator
+lista.sort(key = operator.itemgetter(0))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>i += (1,)</expression-string>
+        <expression-string>import operator
+listb = list.sort(lista, key = operator.itemgetter(0))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>e = next(iter(myset))
-x = next(e)
-y = next(e)
-print e,x,y</expression-string>
+        <expression-string>listb = list.sort(lista, key = operator.itemgetter(0))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>e = iter(myset)
-x = next(e)
-y = next(e)
-print e,x,y</expression-string>
+        <expression-string>listb = list.sort(lista, key = object.itemgetter(0))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>e = iter(myset)
-x = next(e)
-y = next(e)</expression-string>
+        <expression-string>listb = list.sort(lista)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>next(iter(myset))</expression-string>
+        <expression-string>i[g1[j][k]-1]+1</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[e] = myset</expression-string>
+        <expression-string>g1[j][k]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>set(e)</expression-string>
+        <expression-string>i[g1[j][k]-1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -697,8 +688,8 @@ y = next(e)</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2037">
-          <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+        <state relative-caret-position="355">
+          <caret line="176" lean-forward="true" selection-start-line="176" selection-end-line="176" />
         </state>
       </provider>
     </entry>
