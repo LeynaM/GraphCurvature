@@ -14,7 +14,6 @@ def summary(g):
     print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curvature, s1out, curve_sharp)
     return
 
-
 def norm2(g):
     gnorm = [[0 for i in range(4)] for i in range(1, len(g) + 1)]
     gnorm[0] = [g[0][i] for i in range(len(g[0]))]
@@ -132,43 +131,60 @@ def iso(g1, g2):
         return False
 
 
-def fullpartition(n):
-    m = []
-    m.append([n])
+def partition(n):
+    m = [[n]]
     for x in range(1, n):
-        for y in fullpartition(n - x):
+        for y in partition(n - x):
             s = sorted([x] + y)
             if s not in m:
                 m.append(s)
     return m
+
+def fillbrackets(lists, part, b, h):
+    if len(part) == 0:
+        print h
+    #remove stuff from lists
+    else:
+        p = part[0]
+        part.remove(p)
+        for i in lists[p-1]:
+            h.append(i)
+            bnew = b
+            for j in i:
+                bnew[j-1] -= 1
+            fillbrackets(lists, part, bnew, h)
+
+
+
 
 
 def generate():
     oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
                 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-    a_1 = [[1], [2], [3], [4]]
-    a_2 = [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
-    a_3 = [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
-    a_4 = [[1, 2, 3, 4]]
+    lists = [[[1], [2], [3], [4]],
+    [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+    [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+    [[1, 2, 3, 4]]]
     b = outdeg(standardise([oneballs[-3]]))
     n = sum(b)
     l = []
     for i in range(len(b)):
         if b[i] != 0:
             l.append(i + 1)
-    parts = fullpartition(n)
+    parts = partition(n)
+    print l
     print parts
     partsnew = []
     for a in parts:
         if max(a) <= len(l) and max(b) <= len(a):
             partsnew.append(a)
     print partsnew
-    # for a in parts:
-    #             for i in range(len(oneballs)):
-    #                 ball_i = oneballs[i]
-    #                 for i in range(len(a)):
-
+    #FILLING THEM NOW
+    for a in partsnew:
+        h = []
+    h = []
+    print fillbrackets(lists, partsnew[0], b, h)
 
 
 #a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
