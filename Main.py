@@ -132,96 +132,51 @@ def iso(g1, g2):
         return False
 
 
-
-def part(n, g):
-    b = outdeg(standardise(g))
-    l = []
-    for i in range(len(b)):
-        if b[i] != 0:
-            l.append(i+1)
-    if n == 0:
-        return 0
-    else:
-        if n in l:
-            m = ((n))
-        else:
-            m = ()
-        #while n-i >= 0:
-        #    for i in l:
-        #        m = [i]
-        #        m += part(n-i, g)
-        #        #m += i
-        for i in range(1,n):
-            for j in part(n-i, g):
-                m.sort()
-                m += sorted(((i,) + j))
-        return m
-
-def partition(n, g):
-    b = outdeg(standardise(g))
-    l = []
-    for i in range(len(b)):
-        if b[i] != 0:
-            l.append(i + 1)
+def fullpartition(n):
     m = []
-    if n<= len(l):
-        m.append([n])
+    m.append([n])
     for x in range(1, n):
-        for y in partition(n - x, g):
-            if x <= len(l):
-                s = sorted([x] + y)
-                if s not in m:
-                    m.append(s)
+        for y in fullpartition(n - x):
+            s = sorted([x] + y)
+            if s not in m:
+                m.append(s)
     return m
 
 
-
-[[1, 1, 1, 2], [1, 1, 1, 1, 1], [1, 2, 2], [1, 1, 3], [2, 3], [1, 4]]
-
-
-
-def generate(g):
-    oneballs = [[0, 0, 0, 0, 0, 0,], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 0, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
+def generate():
+    oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+                [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
     a_1 = [[1], [2], [3], [4]]
     a_2 = [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]
     a_3 = [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]]
     a_4 = [[1, 2, 3, 4]]
-    b = outdeg(standardise(g))
+    b = outdeg(standardise([oneballs[-3]]))
     n = sum(b)
-    parts = partition(n, g)
+    l = []
+    for i in range(len(b)):
+        if b[i] != 0:
+            l.append(i + 1)
+    parts = fullpartition(n)
+    print parts
+    partsnew = []
     for a in parts:
-            if max(b) <= len(a):
-                for i in range(len(a)):
-                    if a[i] > 4:
+        if max(a) <= len(l) and max(b) <= len(a):
+            partsnew.append(a)
+    print partsnew
+    # for a in parts:
+    #             for i in range(len(oneballs)):
+    #                 ball_i = oneballs[i]
+    #                 for i in range(len(a)):
 
 
 
+#a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
 
+#b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
+generate()
 
-
-g = [[0, 0, 1, 1, 0, 0]]
-h = standardise(g)
-
-
-
-
-a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
-
-b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
-g = (standardise([[0, 1, 1, 1, 0, 1]]))
-#print part(5, g)
-#print partition(6, g)
-#print outdeg(h)
-
-#print generate([[1, 0, 1, 0, 0, 1]])
-
-#print standardise([[1, 0, 1, 1, 0, 1], [1, 2]])
-#print iso2([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]], [[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
-
-#print standardise([[1, 0, 0, 0, 0, 0], [2, 4], [1, 3], [4]])
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
