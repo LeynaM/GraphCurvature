@@ -3,6 +3,12 @@ from itertools import permutations
 import time
 import CurvatureCalculator as curve
 
+oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+[1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
+lists = [[[1], [2], [3], [4]], [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]], [[1, 2, 3],
+[1, 2, 4], [1, 3, 4], [2, 3, 4]],[[1, 2, 3, 4]]]
+h = []
 
 def summary(g):
     gs = standardise(g)
@@ -156,35 +162,41 @@ def fillbrackets(lists, part, b, h):
 
 
 
-
+def fill_twoball_brackets(b, part, twoball_so_far):
+    hsub = []
+    if len(part) == 0:
+        h.append(twoball_so_far)
+    else:
+        p = part[0]
+        for a in lists[p-1]:
+            for i in a:
+                if b[i-1] != 0:
+                    b_new = b[:]
+                    b_new[i-1] -= 1
+                    part_new = part[1:]
+                    new_twoball_so_far = twoball_so_far + [a]
+                    fill_twoball_brackets(b_new, part_new, new_twoball_so_far)
+                    hsub.append(new_twoball_so_far)
+    h.append(hsub)
+    return h
 
 def generate():
-    oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-    lists = [[[1], [2], [3], [4]],
-    [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
-    [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
-    [[1, 2, 3, 4]]]
-    b = outdeg(standardise([oneballs[-3]]))
-    n = sum(b)
-    l = []
-    for i in range(len(b)):
-        if b[i] != 0:
-            l.append(i + 1)
-    parts = partition(n)
-    print l
-    print parts
-    partsnew = []
-    for a in parts:
-        if max(a) <= len(l) and max(b) <= len(a):
-            partsnew.append(a)
-    print partsnew
-    #FILLING THEM NOW
-    for a in partsnew:
+    for oneball in oneballs:
+        b = outdeg(standardise([oneball]))
+        n = sum(b)
+        l = []
+        for i in range(len(b)):
+            if b[i] != 0:
+                l.append(i + 1)
+        parts = partition(n)
+        partsnew = []
+        for a in parts:
+            if max(a) <= len(l) and max(b) <= len(a):
+                partsnew.append(a)
         h = []
-    h = []
-    print fillbrackets(lists, partsnew[0], b, h)
+        for part in partsnew:
+            fill_twoball_brackets(b, part, [oneball])
+
 
 
 #a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
@@ -192,6 +204,8 @@ def generate():
 #b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
 generate()
+
+
 
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
