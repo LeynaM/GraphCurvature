@@ -6,8 +6,10 @@ import CurvatureCalculator as curve
 oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-lists = [[[1], [2], [3], [4]], [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]], [[1, 2, 3],
-[1, 2, 4], [1, 3, 4], [2, 3, 4]],[[1, 2, 3, 4]]]
+lists = [[[1], [2], [3], [4]],
+         [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+         [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+         [[1, 2, 3, 4]]]
 h = []
 
 def summary(g):
@@ -146,41 +148,47 @@ def partition(n):
                 m.append(s)
     return m
 
-def fillbrackets(lists, part, b, h):
+def fill_twoballs(b, part, twoball, h):
     if len(part) == 0:
-        print h
-    #remove stuff from lists
-    else:
-        p = part[0]
-        part.remove(p)
-        for i in lists[p-1]:
-            h.append(i)
-            bnew = b
-            for j in i:
-                bnew[j-1] -= 1
-            fillbrackets(lists, part, bnew, h)
+        twoball.sort()
+        if twoball not in h:
+            h.append(twoball)
+        return
+    p = part[0]
+    part_new = part[1:]
+    for a in lists[p-1]:
+        valid = True
+        b_new = b[:]
+        for i in a:
+            if b[i-1] == 0:
+                valid = False
+            b_new[i-1] -= 1
+        if valid:
+            new_twoball = twoball + [a]
+            fill_twoballs(b_new, part_new, new_twoball, h)
+    return
 
-
-
-def fill_twoball_brackets(b, part, twoball_so_far):
-    hsub = []
+def fill_twoballs1(b, part, twoball, h):
     if len(part) == 0:
-        h.append(twoball_so_far)
-    else:
-        p = part[0]
-        for a in lists[p-1]:
-            for i in a:
-                if b[i-1] != 0:
-                    b_new = b[:]
-                    b_new[i-1] -= 1
-                    part_new = part[1:]
-                    new_twoball_so_far = twoball_so_far + [a]
-                    fill_twoball_brackets(b_new, part_new, new_twoball_so_far)
-                    hsub.append(new_twoball_so_far)
-    h.append(hsub)
-    return h
+        h.append(twoball)
+        return
+    p = part[0]
+    part_new = part[1:]
+    valid = True
+    b_new = b[:]
+    for a in lists[p-1]:
+        for i in a:
+            if b[i-1] == 0:
+                valid = False
+            b_new[i-1] -= 1
+        if valid:
+            new_twoball = twoball + [a]
+            fill_twoballs(b_new, part_new, new_twoball, h)
+    return
+
 
 def generate():
+    allofthegraphs = []
     for oneball in oneballs:
         b = outdeg(standardise([oneball]))
         n = sum(b)
@@ -193,9 +201,35 @@ def generate():
         for a in parts:
             if max(a) <= len(l) and max(b) <= len(a):
                 partsnew.append(a)
-        h = []
+        #If any zeros in b append listsssss
+        all_2balls = []
+        n = 0
         for part in partsnew:
-            fill_twoball_brackets(b, part, [oneball])
+            twoball = []
+            h = []
+            fill_twoballs(b, part, twoball, h)
+            all_2balls.append(h)
+        #     print ""
+        #     print "part = ", part
+        #     print "h = ", h
+        #     print "len h = ", len(h)
+        #     print "all 2 balls so far =", all_2balls
+        # print ""
+        # print ""
+        # print "all two balls for this one ball calculated now"
+        for i in all_2balls:
+            for j in i:
+                graph = [oneball]
+                j.sort(key=len)
+                for k in j:
+                    graph.append(k)
+                allofthegraphs.append(graph)
+        # print ""
+        # print "all of the graphs so far"
+        # print allofthegraphs
+    for graph in allofthegraphs:
+        print graph
+    print len(allofthegraphs)
 
 
 
