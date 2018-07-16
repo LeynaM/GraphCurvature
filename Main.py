@@ -148,6 +148,16 @@ def partition(n):
                 m.append(s)
     return m
 
+def partition2(n):
+    m = [[n]]
+    for x in range(1, n):
+        for y in partition(n - x):
+            s = sorted([x] + y, reverse=True)
+            if s not in m:
+                m.append(s)
+    return m
+
+
 def fill_twoballs(b, part, twoball, h):
     if len(part) == 0:
         twoball.sort()
@@ -196,7 +206,7 @@ def generate():
         for i in range(len(b)):
             if b[i] != 0:
                 l.append(i + 1)
-        parts = partition(n)
+        parts = partition2(n)
         partsnew = []
         for a in parts:
             if max(a) <= len(l) and max(b) <= len(a):
@@ -227,9 +237,9 @@ def generate():
         # print ""
         # print "all of the graphs so far"
         # print allofthegraphs
-    for graph in allofthegraphs:
-        print graph
-    print len(allofthegraphs)
+    # for graph in allofthegraphs:
+    #     print graph
+    # print len(allofthegraphs)
 
 
 
@@ -237,10 +247,13 @@ def generate():
 
 #b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
+t1 = time.time()
 generate()
+generate()
+generate()
+t2 = time.time()
 
-
-
+print t2 - t1
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
