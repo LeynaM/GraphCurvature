@@ -178,7 +178,7 @@ def fill_twoballs(b, part, twoball, h):
 
 def generate():
     allofthegraphs = []
-    for oneball in oneballs:
+    for oneball in oneballs[:-1]:
         b = outdeg(standardise([oneball]))
         n = sum(b)
         l = 0
@@ -190,7 +190,7 @@ def generate():
         for a in parts:
             if max(a) <= l and max(b) <= len(a):
                 partsnew.append(a)
-        #If any zeros in b append listsssss
+        #If any zeros in b append listssss
         all_2balls = []
         n = 0
         for part in partsnew:
@@ -216,9 +216,9 @@ def generate():
         # print ""
         # print "all of the graphs so far"
         # print allofthegraphs
-    for graph in allofthegraphs:
-        print graph
-    print len(allofthegraphs)
+    # for graph in allofthegraphs:
+    #     print graph
+    # print len(allofthegraphs)
 
 
 
@@ -227,13 +227,13 @@ def generate():
 
 #b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
-# t1 = time.time()
+t1 = time.time()
 generate()
-# generate()
-# generate()
-# t2 = time.time()
-# #
-# print t2 - t1
+generate()
+generate()
+t2 = time.time()
+
+print t2 - t1
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
