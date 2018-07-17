@@ -6,8 +6,7 @@ import CurvatureCalculator as curve
 oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-lists = [[[1], [2], [3], [4]],
-         [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+lists = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
          [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
          [[1, 2, 3, 4]]]
 h = []
@@ -143,15 +142,6 @@ def partition(n):
     m = [[n]]
     for x in range(1, n):
         for y in partition(n - x):
-            s = sorted([x] + y)
-            if s not in m:
-                m.append(s)
-    return m
-
-def partition2(n):
-    m = [[n]]
-    for x in range(1, n):
-        for y in partition(n - x):
             s = sorted([x] + y, reverse=True)
             if s not in m:
                 m.append(s)
@@ -164,9 +154,17 @@ def fill_twoballs(b, part, twoball, h):
         if twoball not in h:
             h.append(twoball)
         return
+    if part[0] == 1:
+        for i in range(4):
+            for j in range(b[i]):
+                new_twoball = twoball + [[i+1]]
+        new_twoball.sort()
+        if new_twoball not in h:
+            h.append(new_twoball)
+        return
     p = part[0]
     part_new = part[1:]
-    for a in lists[p-1]:
+    for a in lists[p-2]:
         valid = True
         b_new = b[:]
         for i in a:
@@ -178,25 +176,6 @@ def fill_twoballs(b, part, twoball, h):
             fill_twoballs(b_new, part_new, new_twoball, h)
     return
 
-def fill_twoballs1(b, part, twoball, h):
-    if len(part) == 0:
-        h.append(twoball)
-        return
-    p = part[0]
-    part_new = part[1:]
-    valid = True
-    b_new = b[:]
-    for a in lists[p-1]:
-        for i in a:
-            if b[i-1] == 0:
-                valid = False
-            b_new[i-1] -= 1
-        if valid:
-            new_twoball = twoball + [a]
-            fill_twoballs(b_new, part_new, new_twoball, h)
-    return
-
-
 def generate():
     allofthegraphs = []
     for oneball in oneballs:
@@ -206,7 +185,7 @@ def generate():
         for i in range(len(b)):
             if b[i] != 0:
                 l.append(i + 1)
-        parts = partition2(n)
+        parts = partition(n)
         partsnew = []
         for a in parts:
             if max(a) <= len(l) and max(b) <= len(a):
@@ -230,16 +209,17 @@ def generate():
         for i in all_2balls:
             for j in i:
                 graph = [oneball]
-                j.sort(key=len)
                 for k in j:
                     graph.append(k)
                 allofthegraphs.append(graph)
+    allofthegraphs.append([oneballs[-1]])
         # print ""
         # print "all of the graphs so far"
         # print allofthegraphs
-    # for graph in allofthegraphs:
-    #     print graph
-    # print len(allofthegraphs)
+    for graph in allofthegraphs:
+        print graph
+    print len(allofthegraphs)
+
 
 
 
@@ -247,13 +227,13 @@ def generate():
 
 #b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
-t1 = time.time()
+# t1 = time.time()
 generate()
-generate()
-generate()
-t2 = time.time()
-
-print t2 - t1
+# generate()
+# generate()
+# t2 = time.time()
+# #
+# print t2 - t1
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
