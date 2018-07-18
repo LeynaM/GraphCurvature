@@ -192,33 +192,32 @@ def generate():
                 partsnew.append(a)
         #If any zeros in b append listssss
         all_2balls = []
-        n = 0
         for part in partsnew:
             twoball = []
             h = []
             fill_twoballs(b, part, twoball, h)
             all_2balls.append(h)
-        #     print ""
-        #     print "part = ", part
-        #     print "h = ", h
-        #     print "len h = ", len(h)
-        #     print "all 2 balls so far =", all_2balls
-        # print ""
-        # print ""
-        # print "all two balls for this one ball calculated now"
+        oneball_graphs = []
         for i in all_2balls:
             for j in i:
                 graph = [oneball]
                 for k in j:
                     graph.append(k)
-                allofthegraphs.append(graph)
-    allofthegraphs.append([oneballs[-1]])
-        # print ""
-        # print "all of the graphs so far"
-        # print allofthegraphs
-    # for graph in allofthegraphs:
-    #     print graph
-    # print len(allofthegraphs)
+                # isomorphic = False
+                # for l in oneball_graphs:
+                #     isomorphic = iso(l,graph)
+                # if not isomorphic:
+                oneball_graphs.append(graph)
+        allofthegraphs.append(oneball_graphs)
+    allofthegraphs.append([[oneballs[-1]]])
+
+    length = 0
+    print allofthegraphs
+    for oneballsubset in allofthegraphs:
+        length += len(oneballsubset)
+        for graph in oneballsubset:
+            print graph
+    print length
 
 
 
@@ -227,13 +226,13 @@ def generate():
 
 #b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
 
-t1 = time.time()
+# t1 = time.time()
+# generate()
+# generate()
 generate()
-generate()
-generate()
-t2 = time.time()
+# t2 = time.time()
 
-print t2 - t1
+# print t2 - t1
 
 # summary(((1,1,1,1,0,0),(2,3,4),(4)))
 
