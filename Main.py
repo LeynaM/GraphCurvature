@@ -10,6 +10,7 @@ oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0
 all_2ball_vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
                       [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
                       [[1, 2, 3, 4]]]
+h = []
 
 def summary(g):
     gs = standardise(g)
@@ -148,8 +149,8 @@ def partition(n):
                 m.append(s)
     return m
 
-h = []
-def fill_twoballs(b, part, two_sphere):
+
+def fill_twoballs(b, part, two_sphere, h):
     if len(part) == 0:
         two_sphere.sort()
         if two_sphere not in h:
@@ -176,7 +177,7 @@ def fill_twoballs(b, part, two_sphere):
             b_new[i-1] -= 1
         if valid:
             new_two_sphere = two_sphere + [a]
-            fill_twoballs(b_new, part_new, new_two_sphere)
+            fill_twoballs(b_new, part_new, new_two_sphere, h)
     return
 
 def generate():
@@ -198,8 +199,8 @@ def generate():
         two_spheres = []
         for part in partsnew:
             twoball = []
-            #h = []
-            fill_twoballs(b, part, twoball)
+            h = []
+            fill_twoballs(b, part, twoball, h)
             two_spheres.append(h)
         oneball_graphs = []
         for i in two_spheres:
@@ -223,28 +224,24 @@ def generate():
         for graph in list:
             print graph
 
-h = []
-two_sphere = [[0, 0, 1, 1, 0, 0]]
-b = outdeg(standardise(two_sphere))
-part = [3, 2, 1, 1, 1]
-fill_twoballs(b, part, two_sphere)
-print h
+    length = 0
+    print "All of the graphs:"
+    for oneballsubset in all_two_balls:
+        length += len(oneballsubset)
+        for graph in oneballsubset:
+            print graph
+    print "Number of graphs generated: ", length
+    print "Graphs with positive curvature:"
+    print positivecurvature
+    print "Number of graphs with positive curvature: ", len(positivecurvature)
+    print "Graphs that are curvature sharp:"
+    print curvaturesharp
+    print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
 
 
-#generate()
-    # length = 0
-    # print "All of the graphs:"
-    # for oneballsubset in all_two_balls:
-    #     length += len(oneballsubset)
-    #     for graph in oneballsubset:
-    #         print graph
-    # print "Number of graphs generated: ", length
-    # print "Graphs with positive curvature:"
-    # print positivecurvature
-    # print "Number of graphs with positive curvature: ", len(positivecurvature)
-    # print "Graphs that are curvature sharp:"
-    # print curvaturesharp
-    # print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
 
 
-#generate()
+generate()
+
+
+
