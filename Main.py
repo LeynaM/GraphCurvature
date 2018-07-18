@@ -181,14 +181,14 @@ def generate():
     for oneball in oneballs[:-1]:
         b = outdeg(standardise([oneball]))
         n = sum(b)
-        l = 0
+        l = []
         for i in range(len(b)):
             if b[i] != 0:
-                l += 1
+                l.append(i + 1)
         parts = partition(n)
         partsnew = []
         for a in parts:
-            if max(a) <= l and max(b) <= len(a):
+            if max(a) <= len(l) and max(b) <= len(a):
                 partsnew.append(a)
         #If any zeros in b append listssss
         all_2balls = []
