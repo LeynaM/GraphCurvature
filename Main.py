@@ -1,24 +1,24 @@
 import numpy as np
 from itertools import permutations
 import time
-import CurvatureCalculator as curve
+import CurvatureCalculator as curvature
+import copy
 
 oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-lists = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
-         [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
-         [[1, 2, 3, 4]]]
-h = []
+all_2ball_vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+                      [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+                      [[1, 2, 3, 4]]]
 
 def summary(g):
     gs = standardise(g)
     adjmatrix = adjmat(gs)
-    curvature = curve.curv_calc(adjmatrix, 0)
+    curv = curvature.curv_calc(adjmatrix, 0)
     outdegree = outdeg(gs[1:])
     s1out = s1outreg(outdegree)
-    curve_sharp = curvesharp(curvature, outdegree)
-    print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curvature, s1out, curve_sharp)
+    curve_sharp = curv_sharp(curv, outdegree)
+    print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
     return
 
 def norm2(g):
@@ -43,13 +43,14 @@ def norm(g):
 
 
 def standardise(g):
-    adjmatrix = adjmat(g)
+    gnew = g[:]
+    adjmatrix = adjmat(gnew)
     for i in range(4):
         col = 4 - sum(adjmatrix[i + 1])
         if col != 0:
             for j in range(int(col)):
-                g.append([i + 1])
-    return g
+                gnew.append([i + 1])
+    return gnew
 
 
 def adjmat(g):
@@ -100,7 +101,7 @@ def outdeg(g2):
     return outdeg
 
 
-def curvesharp(curve, outdeg):
+def curv_sharp(curve, outdeg):
     k = (7 - 0.25 * sum(outdeg)) * 0.5
     if abs(curve - k) <= 1e-6 :
         return True
@@ -147,24 +148,26 @@ def partition(n):
                 m.append(s)
     return m
 
-
-def fill_twoballs(b, part, twoball, h):
+h = []
+def fill_twoballs(b, part, two_sphere):
     if len(part) == 0:
-        twoball.sort()
-        if twoball not in h:
-            h.append(twoball)
+        two_sphere.sort()
+        if two_sphere not in h:
+            h.append(two_sphere)
         return
     if part[0] == 1:
+        new_two_sphere = two_sphere[:]
         for i in range(4):
             for j in range(b[i]):
-                new_twoball = twoball + [[i+1]]
-        new_twoball.sort()
-        if new_twoball not in h:
-            h.append(new_twoball)
+                new_two_sphere = new_two_sphere + [[i+1]]
+        new_two_sphere.sort()
+        new_two_sphere.sort(key=len, reverse=True)
+        if new_two_sphere not in h:
+            h.append(new_two_sphere)
         return
     p = part[0]
     part_new = part[1:]
-    for a in lists[p-2]:
+    for a in all_2ball_vertices[p - 2]:
         valid = True
         b_new = b[:]
         for i in a:
@@ -172,12 +175,14 @@ def fill_twoballs(b, part, twoball, h):
                 valid = False
             b_new[i-1] -= 1
         if valid:
-            new_twoball = twoball + [a]
-            fill_twoballs(b_new, part_new, new_twoball, h)
+            new_two_sphere = two_sphere + [a]
+            fill_twoballs(b_new, part_new, new_two_sphere)
     return
 
 def generate():
-    allofthegraphs = []
+    all_two_balls = []
+    positivecurvature = []
+    curvaturesharp = []
     for oneball in oneballs[:-1]:
         b = outdeg(standardise([oneball]))
         n = sum(b)
@@ -190,68 +195,56 @@ def generate():
         for a in parts:
             if max(a) <= l and max(b) <= len(a):
                 partsnew.append(a)
-        #If any zeros in b append listssss
-        all_2balls = []
+        two_spheres = []
         for part in partsnew:
             twoball = []
-            h = []
-            fill_twoballs(b, part, twoball, h)
-            all_2balls.append(h)
+            #h = []
+            fill_twoballs(b, part, twoball)
+            two_spheres.append(h)
         oneball_graphs = []
-        for i in all_2balls:
+        for i in two_spheres:
             for j in i:
                 graph = [oneball]
                 for k in j:
                     graph.append(k)
-                # isomorphic = False
-                # for l in oneball_graphs:
-                #     isomorphic = iso(l,graph)
-                # if not isomorphic:
-                oneball_graphs.append(graph)
-        allofthegraphs.append(oneball_graphs)
-    allofthegraphs.append([[oneballs[-1]]])
-
-    length = 0
-    print allofthegraphs
-    for oneballsubset in allofthegraphs:
-        length += len(oneballsubset)
-        for graph in oneballsubset:
+                isomorphic = False
+                for l in oneball_graphs:
+                    isomorphic = iso(l,graph)
+                if not isomorphic:
+                      oneball_graphs.append(graph)
+                curv = curvature.curv_calc(adjmat(graph), 0)
+                if curv >= 0:
+                    positivecurvature.append(graph)
+                if curv_sharp(curv, b):
+                    curvaturesharp.append(graph)
+        all_two_balls.append(oneball_graphs)
+    all_two_balls.append([[oneballs[-1]]])
+    for list in all_two_balls:
+        for graph in list:
             print graph
-    print length
+
+h = []
+two_sphere = [[0, 0, 1, 1, 0, 0]]
+b = outdeg(standardise(two_sphere))
+part = [3, 2, 1, 1, 1]
+fill_twoballs(b, part, two_sphere)
+print h
 
 
+#generate()
+    # length = 0
+    # print "All of the graphs:"
+    # for oneballsubset in all_two_balls:
+    #     length += len(oneballsubset)
+    #     for graph in oneballsubset:
+    #         print graph
+    # print "Number of graphs generated: ", length
+    # print "Graphs with positive curvature:"
+    # print positivecurvature
+    # print "Number of graphs with positive curvature: ", len(positivecurvature)
+    # print "Graphs that are curvature sharp:"
+    # print curvaturesharp
+    # print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
 
 
-#a = standardise([[0, 1, 1, 1, 0, 0], [2, 3], [1, 4]])
-
-#b = standardise([[1, 1, 0, 0, 0, 1], [1, 2], [3, 4]])
-
-# t1 = time.time()
-# generate()
-# generate()
-generate()
-# t2 = time.time()
-
-# print t2 - t1
-
-# summary(((1,1,1,1,0,0),(2,3,4),(4)))
-
-# def two_ball2(a2, m):
-#    for i in range(len(a2)):
-#        m[i+5, i+5] = 1
-#        for j in range(4):
-#            if a2[i][j] == 1
-#                m[i+5, j+1] = 1
-#                m[j+1, i+5] = 1
-#
-# def s1outreg2(G):
-#     g = G[1:]
-#     m = np.zeros((len(g),4))
-#     for i in range(len(g)):
-#         m[i] = g[i]
-#     freq = m.sum(axis = 0)
-#     s1 = True
-#     for i in range(4):
-#         if freq[i] != freq[0]:
-#             s1 = False
-#     return s1
+#generate()
