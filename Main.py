@@ -87,11 +87,10 @@ def two_ball(g2, m):
 
 
 def s1outreg(outdeg):
-    s1 = True
-    for i in range(4):
+    for i in range(1,4):
         if outdeg[i] != outdeg[0]:
-            s1 = False
-    return s1
+            return False
+    return True
 
 
 def outdeg(g2):
@@ -241,7 +240,7 @@ def generate():
 
 
 
-generate()
+#generate()
 
 
 
