@@ -213,36 +213,6 @@ def generate():
                     if curv_sharp(curv, b):
                         curvaturesharp.append(i)
             one_ball_graphs += unique_h
-
-
-
-
-
-
-
-
-        # oneball_graphs = []
-        # for i in one_ball_graphs:
-        #     for j in i:
-        #         graph = [oneball]
-        #         for k in j:
-        #             graph.append(k)
-        #         isomorphic = False
-        #         for l in oneball_graphs:
-        #             isomorphic = iso(l,graph)
-        #         if not isomorphic:
-        #               oneball_graphs.append(graph)
-        #         curv = curvature.curv_calc(adjmat(graph), 0)
-        #         if curv >= 0:
-        #             positivecurvature.append(graph)
-        #         if curv_sharp(curv, b):
-        #             curvaturesharp.append(graph)
-        all_two_balls.append(one_ball_graphs)
-    all_two_balls.append([[oneballs[-1]]])
-    for list in all_two_balls:
-        for graph in list:
-            print graph
-
     length = 0
     print "All of the graphs:"
     for oneballsubset in all_two_balls:
