@@ -110,17 +110,17 @@ def curv_sharp(curve, outdeg):
 
 
 def iso(g1, g2):
-    g1 = standardise(g1)
-    g2 = standardise(g2)
-    a = g1[1:]
-    b = g2[1:]
+    g1_std = standardise(g1)
+    g2_std = standardise(g2)
+    a = g1_std[1:]
+    b = g2_std[1:]
     len_a = len(a)
     if len_a != len(b):
         return False
     else:
         p = list(permutations([0, 1, 2, 3]))
-        m1 = one_ball(g1[0])
-        m2 = one_ball(g2[0])
+        m1 = one_ball(g1_std[0])
+        m2 = one_ball(g2_std[0])
         for i in p:
             m1_new = m1[i, :]
             m1_new = m1_new[:, i]
@@ -151,7 +151,6 @@ def partition(n):
 
 def fill_twoballs(b, part, two_sphere, h):
     if len(part) == 0:
-        two_sphere.sort()
         if two_sphere not in h:
             h.append(two_sphere)
         return
@@ -160,8 +159,6 @@ def fill_twoballs(b, part, two_sphere, h):
         for i in range(4):
             for j in range(b[i]):
                 new_two_sphere = new_two_sphere + [[i+1]]
-        new_two_sphere.sort()
-        new_two_sphere.sort(key=len, reverse=True)
         if new_two_sphere not in h:
             h.append(new_two_sphere)
         return
@@ -195,29 +192,52 @@ def generate():
         for a in parts:
             if max(a) <= l and max(b) <= len(a):
                 partsnew.append(a)
-        two_spheres = []
+        one_ball_graphs = []
         for part in partsnew:
-            twoball = []
+            twoball = [oneball]
             h = []
             fill_twoballs(b, part, twoball, h)
-            two_spheres.append(h)
-        oneball_graphs = []
-        for i in two_spheres:
-            for j in i:
-                graph = [oneball]
-                for k in j:
-                    graph.append(k)
-                isomorphic = False
-                for l in oneball_graphs:
-                    isomorphic = iso(l,graph)
-                if not isomorphic:
-                      oneball_graphs.append(graph)
-                curv = curvature.curv_calc(adjmat(graph), 0)
-                if curv >= 0:
-                    positivecurvature.append(graph)
-                if curv_sharp(curv, b):
-                    curvaturesharp.append(graph)
-        all_two_balls.append(oneball_graphs)
+            unique_h = [h[0]]
+            for i in h[1:]:
+                for j in unique_h:
+                    k = copy.deepcopy(i)
+                    l = copy.deepcopy(j)
+                    isomorphic = iso(k, l)
+                    if isomorphic:
+                        break
+                else:
+                    unique_h.append(i)
+                    curv = curvature.curv_calc(adjmat(i), 0)
+                    if curv >= 0:
+                        positivecurvature.append(i)
+                    if curv_sharp(curv, b):
+                        curvaturesharp.append(i)
+            one_ball_graphs += unique_h
+
+
+
+
+
+
+
+
+        # oneball_graphs = []
+        # for i in one_ball_graphs:
+        #     for j in i:
+        #         graph = [oneball]
+        #         for k in j:
+        #             graph.append(k)
+        #         isomorphic = False
+        #         for l in oneball_graphs:
+        #             isomorphic = iso(l,graph)
+        #         if not isomorphic:
+        #               oneball_graphs.append(graph)
+        #         curv = curvature.curv_calc(adjmat(graph), 0)
+        #         if curv >= 0:
+        #             positivecurvature.append(graph)
+        #         if curv_sharp(curv, b):
+        #             curvaturesharp.append(graph)
+        all_two_balls.append(one_ball_graphs)
     all_two_balls.append([[oneballs[-1]]])
     for list in all_two_balls:
         for graph in list:
@@ -237,10 +257,4 @@ def generate():
     print curvaturesharp
     print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
 
-
-
-
-#generate()
-
-
-
+generate()
