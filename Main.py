@@ -3,24 +3,26 @@ from itertools import permutations
 import time
 import CurvatureCalculator as curvature
 import copy
+from operator import itemgetter
 
-oneballs = [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
-[1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1], [1, 1, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-all_2ball_vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
-                      [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
-                      [[1, 2, 3, 4]]]
-h = []
 
-def summary(g):
-    gs = standardise(g)
-    adjmatrix = adjmat(gs)
-    curv = curvature.curv_calc(adjmatrix, 0)
-    outdegree = outdeg(gs[1:])
-    s1out = s1outreg(outdegree)
-    curve_sharp = curv_sharp(curv, outdegree)
-    print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
+def menu():
+    # gs = standardise(g)
+    # adjmatrix = adjmat(gs)
+    # curv = curvature.curv_calc(adjmatrix, 0)
+    # outdegree = outdeg(gs)
+    # s1out = s1outreg(outdegree)
+    # curve_sharp = curv_sharp(curv, outdegree)
+    # print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
+    all_graphs = generate()
+    write_to_file(all_graphs)
     return
+
+def get_oneballs():
+    return [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+                [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1],
+                [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
+
 
 def norm2(g):
     gnorm = [[0 for i in range(4)] for i in range(1, len(g) + 1)]
@@ -125,7 +127,6 @@ def iso(g1, g2):
             m1_new = m1[i, :]
             m1_new = m1_new[:, i]
             if np.array_equal(m1_new, m2):
-
                 for j in range(len_a):
                     for k in range(len(a[j])):
                         a[j][k] = i[a[j][k]-1] + 1
@@ -149,7 +150,7 @@ def partition(n):
     return m
 
 
-def fill_twoballs(b, part, two_sphere, h):
+def fill_twoballs(b, part, two_sphere, h, vertices):
     if len(part) == 0:
         if two_sphere not in h:
             h.append(two_sphere)
@@ -164,7 +165,7 @@ def fill_twoballs(b, part, two_sphere, h):
         return
     p = part[0]
     part_new = part[1:]
-    for a in all_2ball_vertices[p - 2]:
+    for a in vertices[p - 2]:
         valid = True
         b_new = b[:]
         for i in a:
@@ -173,30 +174,34 @@ def fill_twoballs(b, part, two_sphere, h):
             b_new[i-1] -= 1
         if valid:
             new_two_sphere = two_sphere + [a]
-            fill_twoballs(b_new, part_new, new_two_sphere, h)
+            fill_twoballs(b_new, part_new, new_two_sphere, h, vertices)
     return
 
 def generate():
+    oneballs = get_oneballs()
+    vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+                          [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+                          [[1, 2, 3, 4]]]
     all_two_balls = []
-    positivecurvature = []
-    curvaturesharp = []
     for oneball in oneballs[:-1]:
         b = outdeg(standardise([oneball]))
         n = sum(b)
         l = 0
-        for i in range(len(b)):
+        for i in range(4):
             if b[i] != 0:
                 l += 1
         parts = partition(n)
         partsnew = []
         for a in parts:
-            if max(a) <= l and max(b) <= len(a):
+            length_a = len(a)
+            max_a = max(a)
+            if max_a <= l and max(b) <= length_a:
                 partsnew.append(a)
         one_ball_graphs = []
         for part in partsnew:
             twoball = [oneball]
             h = []
-            fill_twoballs(b, part, twoball, h)
+            fill_twoballs(b, part, twoball, h, vertices)
             unique_h = [h[0]]
             for i in h[1:]:
                 for j in unique_h:
@@ -207,24 +212,116 @@ def generate():
                         break
                 else:
                     unique_h.append(i)
-                    curv = curvature.curv_calc(adjmat(i), 0)
-                    if curv >= 0:
-                        positivecurvature.append(i)
-                    if curv_sharp(curv, b):
-                        curvaturesharp.append(i)
             one_ball_graphs += unique_h
-    length = 0
-    print "All of the graphs:"
-    for oneballsubset in all_two_balls:
-        length += len(oneballsubset)
-        for graph in oneballsubset:
-            print graph
-    print "Number of graphs generated: ", length
-    print "Graphs with positive curvature:"
-    print positivecurvature
-    print "Number of graphs with positive curvature: ", len(positivecurvature)
-    print "Graphs that are curvature sharp:"
-    print curvaturesharp
-    print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
+        all_two_balls.append(one_ball_graphs)
+    return all_two_balls
+    # length = 0
+    # print "All of the graphs:"
+    # for oneballsubset in all_two_balls:
+    #     length += len(oneballsubset)
+    #     for graph in oneballsubset:
+    #         print graph
+    # print all_two_balls
+    # print "Number of graphs generated: ", length
+    # print "Graphs with positive curvature:"
+    # for graph in positivecurvature:
+    #     print graph
+    # print "Number of graphs with positive curvature: ", len(positivecurvature)
+    # print "Graphs that are curvature sharp:"
+    # for graph in curvaturesharp:
+    #     print graph
+    # print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
 
-generate()
+def write_to_file(all_graphs):
+    #Ordering data as required
+    all_tables = []
+    index = 0
+    for one_ball_graphs in all_graphs:
+        table = []
+        oneball = [copy.deepcopy(one_ball_graphs[0][0])]
+        curv = curvature.curv_calc(adjmat(oneball), 0)
+        outdegree = outdeg(oneball)
+        s1out = s1outreg(outdegree)
+        k = (7 - 0.25 * sum(outdegree)) * 0.5
+        for h in one_ball_graphs:
+            two_ball = h[1:]
+            curv_sharpness = curv_sharp(curv, outdegree)
+            table.append([two_ball, curv, curv_sharpness])
+        table.sort(key=itemgetter(1), reverse=True)
+        all_tables.append([one_ball_graphs[0][0], s1out, k, table])
+    #Writing data to file
+    f = open('latex/classification.tex', 'w')
+    # Front page and template
+    f.write('\\documentclass[11pt, oneside]{article}\n'
+            '\\usepackage{geometry}\n'
+            '\\geometry{a4paper, margin = 1in}\n'
+            '\\usepackage[parfill]{parskip}\n'
+            '\\usepackage{graphicx}\n'
+            '\\graphicspath{ {/latex/} }\n'
+            '\\usepackage{wrapfig}\n'
+            '\\usepackage{amssymb}\n\n'
+            '\\title{Brief Article}\n'
+            '\\author{The Author}\n'
+            '\\date{}\n'
+            '\\begin{document}\n'
+            '\\maketitle\n'
+            '\\newpage\n')
+    # Tables
+    index = 1
+    for one_ball_table in all_tables:
+        f.write('\\section{%s}\n\n'
+                'S1 Out-regular: %s\n\n'
+                'Curvature Bound: %.3f\n\n'
+                '\\begin{center}\n'
+                '\\includegraphics[height=5cm]{sample}\n'
+                '\\begin{tabular}{| l | l | l | l |}\n'
+                '\\hline\n'
+                'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n'
+                % (str(one_ball_table[0]), one_ball_table[1], one_ball_table[2]))
+        firstpage = True
+        table_len = 1
+        for table_line in one_ball_table[3]:
+            f.write('%i & %s & %.3f & %s \\\\ \\hline\n' % (index, str(table_line[0]), table_line[1], table_line[2]))
+            if table_len%50 == 0 and not firstpage:
+                f.write('\\end{tabular}\n'
+                        '\\end{center}\n'
+                        '\\newpage\n'
+                        '\\begin{center}\n'
+                        '\\begin{tabular}{| l | l | l | l |}\n'
+                        '\\hline\n'
+                        'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n')
+            if table_len % 25 == 0 and firstpage:
+                f.write('\\end{tabular}\n'
+                        '\\end{center}\n'
+                        '\\newpage\n'
+                        '\\begin{center}\n'
+                        '\\begin{tabular}{| l | l | l | l |}\n'
+                        '\\hline\n'
+                        'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n')
+                table_len = 0
+                firstpage = False
+            table_len += 1
+            index += 1
+        f.write('\\end{tabular}\n'
+                '\\end{center}\n'
+                '\\newpage\n')
+    f.write('\\end{document}')
+    f.close()
+
+
+    # positivecurvature = []
+    # curvaturesharp = []
+    # curv = curvature.curv_calc(adjmat(i), 0)
+    # if curv >= 0:
+    #     positivecurvature.append(i)
+    # # Does it have to be positive to be sharp?
+    # if curv_sharp(curv, b):
+    #     curvaturesharp.append(i)
+
+menu()
+# t1 = time.time()
+# generate()
+# generate()
+# generate()
+# t2 = time.time()
+# print t2 - t1
