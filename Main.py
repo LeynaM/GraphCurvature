@@ -93,12 +93,14 @@ def s1outreg(outdeg):
 
 
 def outdeg(g):
-    g_std = standardise(g)
-    outdeg = [0, 0, 0, 0]
-    for i in range(1,len(g_std)):
-        for j in range(len(g_std[i])):
-            outdeg[g_std[i][j] - 1] += 1
-    return outdeg
+    j = (1, 1, 1, 2, 2, 3)
+    k = (2, 3, 4, 3, 4, 4)
+    outdegree = [0,0,0,0]
+    for i in range(6):
+        if g[0][i] == 0:
+            outdegree[j[i]-1] += 1
+            outdegree[k[i]-1] += 1
+    return outdegree
 
 
 def curv_sharp(curve, outdeg):
@@ -317,16 +319,17 @@ def write_to_file(all_graphs):
     #     curvaturesharp.append(i)
 
 # menu()
-a = standardise([[1, 0, 0, 0, 0, 0],[2,3,4]])
-b = adjmat(a)
-c = adjmat2(a)
+a = standardise([[1, 1, 1, 1, 1, 1]])
+b = outdeg(a)
+c = outdeg2(a)
+d = outdeg3(a)
 t1 = time.time()
-for i in range(1,100000):
-    adjmat(a)
+for i in range(1,1000000):
+    outdeg(a)
 t2 = time.time()
 print t2 - t1
 t1 = time.time()
-for i in range(1,100000):
-    adjmat2(a)
+for i in range(1,1000000):
+    outdeg2(a)
 t2 = time.time()
 print t2 - t1
