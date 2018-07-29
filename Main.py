@@ -95,11 +95,12 @@ def s1outreg(outdeg):
     return True
 
 
-def outdeg(g2):
+def outdeg(g):
+    g_std = standardise(g)
     outdeg = [0, 0, 0, 0]
-    for i in range(1,len(g2)):
-        for j in range(len(g2[i])):
-            outdeg[g2[i][j] - 1] += 1
+    for i in range(1,len(g_std)):
+        for j in range(len(g_std[i])):
+            outdeg[g_std[i][j] - 1] += 1
     return outdeg
 
 
@@ -184,7 +185,7 @@ def generate():
                           [[1, 2, 3, 4]]]
     all_two_balls = []
     for oneball in oneballs[:-1]:
-        b = outdeg(standardise([oneball]))
+        b = outdeg([oneball])
         n = sum(b)
         l = 0
         for i in range(4):
@@ -239,12 +240,12 @@ def write_to_file(all_graphs):
     for one_ball_graphs in all_graphs:
         table = []
         oneball = [copy.deepcopy(one_ball_graphs[0][0])]
-        curv = curvature.curv_calc(adjmat(oneball), 0)
         outdegree = outdeg(oneball)
         s1out = s1outreg(outdegree)
         k = (7 - 0.25 * sum(outdegree)) * 0.5
         for h in one_ball_graphs:
             two_ball = h[1:]
+            curv = curvature.curv_calc(adjmat(h), 0)
             curv_sharpness = curv_sharp(curv, outdegree)
             table.append([two_ball, curv, curv_sharpness])
         table.sort(key=itemgetter(1), reverse=True)
@@ -273,7 +274,7 @@ def write_to_file(all_graphs):
                 'S1 Out-regular: %s\n\n'
                 'Curvature Bound: %.3f\n\n'
                 '\\begin{center}\n'
-                '\\includegraphics[height=5cm]{sample}\n'
+                '\\includegraphics[height=5cm]{sample}\n\n'
                 '\\begin{tabular}{| l | l | l | l |}\n'
                 '\\hline\n'
                 'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n'
