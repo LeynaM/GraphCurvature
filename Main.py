@@ -19,20 +19,9 @@ def menu():
     return
 
 def get_oneballs():
-    return [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+    return np.array([[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
                 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1],
-                [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
-
-
-def norm2(g):
-    gnorm = [[0 for i in range(4)] for i in range(1, len(g) + 1)]
-    gnorm[0] = [g[0][i] for i in range(len(g[0]))]
-    g2 = g[1:]
-    for j in range(4):
-        for i in range(len(g2)):
-            if j + 1 in g2[i]:
-                gnorm[i + 1][j] = 1
-    return gnorm
+                [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]])
 
 
 def norm(g):
@@ -48,10 +37,11 @@ def norm(g):
 def standardise(g):
     gnew = g[:]
     adjmatrix = adjmat(gnew)
+    col_sum = np.sum(adjmatrix[1:,1:5], axis=0)
     for i in range(4):
-        col = 4 - sum(adjmatrix[i + 1])
+        col = 3 - int(col_sum[i])
         if col != 0:
-            for j in range(int(col)):
+            for j in range(col):
                 gnew.append([i + 1])
     return gnew
 
@@ -319,10 +309,14 @@ def write_to_file(all_graphs):
     # if curv_sharp(curv, b):
     #     curvaturesharp.append(i)
 
-menu()
-# t1 = time.time()
-# generate()
-# generate()
-# generate()
-# t2 = time.time()
-# print t2 - t1
+# menu()
+t1 = time.time()
+for i in range(1,100000):
+    standardise([[0, 0, 0, 0, 0, 0]])
+t2 = time.time()
+print t2 - t1
+t1 = time.time()
+for i in range(1,100000):
+    standardise2([[0, 0, 0, 0, 0, 0]])
+t2 = time.time()
+print t2 - t1
