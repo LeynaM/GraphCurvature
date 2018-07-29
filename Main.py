@@ -69,8 +69,8 @@ def one_ball(g1):
     j = (2, 3, 4, 3, 4, 4)
     for n in range(6):
         if g1[n] == 1:
-            m1[i[n]-1, j[n]-1] = g1[n]
-            m1[j[n]-1, i[n]-1] = g1[n]
+            m1[i[n]-1, j[n]-1] = 1
+            m1[j[n]-1, i[n]-1] = 1
     return m1
 
 
