@@ -47,12 +47,19 @@ def standardise(g):
 
 
 def adjmat(g):
-    length = 4 + len(g)
-    m = np.zeros((length, length))
+    length = len(g)
+    m = np.zeros((4+length, 4+length))
     m[0, 1:5] = 1
     m[1:5, 0] = 1
     m[1:5, 1:5] = one_ball(g[0])
-    two_ball(g[1:], m)
+    for i in range(1, length):
+        if type(g[i]) is int:
+            m[i + 4, g[i]] = 1
+            m[g[i], i + 4] = 1
+        else:
+            for j in range(len(g[i])):
+                m[i + 4, g[i][j]] = 1
+                m[g[i][j], i + 4] = 1
     return m
 
 
@@ -310,13 +317,16 @@ def write_to_file(all_graphs):
     #     curvaturesharp.append(i)
 
 # menu()
+a = standardise([[1, 0, 0, 0, 0, 0],[2,3,4]])
+b = adjmat(a)
+c = adjmat2(a)
 t1 = time.time()
 for i in range(1,100000):
-    standardise([[0, 0, 0, 0, 0, 0]])
+    adjmat(a)
 t2 = time.time()
 print t2 - t1
 t1 = time.time()
 for i in range(1,100000):
-    standardise2([[0, 0, 0, 0, 0, 0]])
+    adjmat2(a)
 t2 = time.time()
 print t2 - t1
