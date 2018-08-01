@@ -4,24 +4,37 @@ import time
 import CurvatureCalculator as curvature
 import copy
 from operator import itemgetter
+import ast
 
 
 def menu():
-    # gs = standardise(g)
-    # adjmatrix = adjmat(gs)
-    # curv = curvature.curv_calc(adjmatrix, 0)
-    # outdegree = outdeg(gs)
-    # s1out = s1outreg(outdegree)
-    # curve_sharp = curv_sharp(curv, outdegree)
-    # print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
-    all_graphs = generate()
-    write_to_file(all_graphs)
+    run = True
+    while run:
+        print "Menu\n1. Evaluate a graph\n2. Generate latex document of all the graphs\n3. Exit"
+        input = raw_input("Select: ")
+        if input == "1":
+            g_in = raw_input("Input a graph: ")
+            g = ast.literal_eval(g_in)
+            gs = standardise(g)
+            adjmatrix = adjmat(gs)
+            curv = curvature.curv_calc(adjmatrix, 0)
+            outdegree = outdeg(gs)
+            s1out = s1outreg(outdegree)
+            curve_sharp = curv_sharp(curv, outdegree)
+            print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
+        elif input == "2":
+            all_graphs = generate()
+            write_to_file(all_graphs)
+        elif input == "3":
+            run = False
+        else:
+            print "\nInvalid input\n\n"
     return
 
 def get_oneballs():
-    return np.array([[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
+    return [[0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0],
                 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1],
-                [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]])
+                [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
 
 
 def norm(g):
@@ -124,18 +137,19 @@ def iso(g1, g2):
         m1 = one_ball(g1_std[0])
         m2 = one_ball(g2_std[0])
         for i in p:
+            anew = a[:]
             m1_new = m1[i, :]
             m1_new = m1_new[:, i]
             if np.array_equal(m1_new, m2):
                 for j in range(len_a):
                     for k in range(len(a[j])):
-                        a[j][k] = i[a[j][k]-1] + 1
+                        anew[j][k] = i[a[j][k]-1] + 1
                 for i in range(len_a):
-                    a[i].sort()
+                    anew[i].sort()
                     b[i].sort()
-                a.sort()
+                anew.sort()
                 b.sort()
-                if a == b:
+                if anew == b:
                     return True
         return False
 
@@ -214,7 +228,6 @@ def generate():
                     unique_h.append(i)
             one_ball_graphs += unique_h
         all_two_balls.append(one_ball_graphs)
-    return all_two_balls
     # length = 0
     # print "All of the graphs:"
     # for oneballsubset in all_two_balls:
@@ -231,9 +244,100 @@ def generate():
     # for graph in curvaturesharp:
     #     print graph
     # print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
+    all_two_balls.append([[[1, 1, 1, 1, 1, 1]]])
+    return all_two_balls
 
 def write_to_file(all_graphs):
+    oneballimages = ['\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v3) edge[red] (v4)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v1) edge[bend left, red] (v3)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v4) edge[red] (v1)\n'
+                     '\t(v1) edge[bend left, red] (v3)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v2) edge[red] (v3)\n'
+                     '\t(v1) edge[bend left, red] (v3)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v1) edge[bend left, red] (v3)\n'
+                     '\t(v2) edge[bend left, red] (v4)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v3) edge[red] (v4)\n'
+                     '\t(v1) edge[bend left, red] (v3)\n'
+                     '\t(v2) edge[bend left, red] (v4)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v2) edge[red] (v3)\n'
+                     '\t(v4) edge[red] (v1)\n'
+                     '\t(v1) edge[bend left, red] (v3)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v2) edge[red] (v3)\n'
+                     '\t(v4) edge[red] (v1)\n'
+                     '\t(v1) edge[bend left, red] (v3)\n'
+                     '\t(v2) edge[bend left, red] (v4)[thick];\n'
+                     '\\end{tikzpicture}',
+                     '\\draw(v0) -- (v1)\n'
+                     '\t(v0) -- (v2)\n'
+                     '\t(v0) -- (v3)\n'
+                     '\t(v0) -- (v4)\n'
+                     '\t(v1) edge[red] (v2)\n'
+                     '\t(v2) edge[red] (v3)\n'
+                     '\t(v3) edge[red] (v4)\n'
+                     '\t(v4) edge[red] (v1)\n'
+                     '\t(v1) edge[bend left, red] (v3)\n'
+                     '\t(v2) edge[bend left, red] (v4)[thick];\n'
+                     '\\end{tikzpicture}']
     #Ordering data as required
+    curvature_sharp_graphs = []
     all_tables = []
     index = 0
     for one_ball_graphs in all_graphs:
@@ -246,6 +350,8 @@ def write_to_file(all_graphs):
             two_ball = h[1:]
             curv = curvature.curv_calc(adjmat(h), 0)
             curv_sharpness = curv_sharp(curv, outdegree)
+            if curv_sharpness:
+                curvature_sharp_graphs.append(h)
             table.append([two_ball, curv, curv_sharpness])
         table.sort(key=itemgetter(1), reverse=True)
         all_tables.append([one_ball_graphs[0][0], s1out, k, table])
@@ -259,6 +365,7 @@ def write_to_file(all_graphs):
             '\\usepackage{graphicx}\n'
             '\\graphicspath{ {/latex/} }\n'
             '\\usepackage{wrapfig}\n'
+            '\\usepackage{tikz}\n'
             '\\usepackage{amssymb}\n\n'
             '\\title{Brief Article}\n'
             '\\author{The Author}\n'
@@ -268,16 +375,25 @@ def write_to_file(all_graphs):
             '\\newpage\n')
     # Tables
     index = 1
+    n = 0
     for one_ball_table in all_tables:
         f.write('\\section{%s}\n\n'
                 'S1 Out-regular: %s\n\n'
                 'Curvature Bound: %.3f\n\n'
                 '\\begin{center}\n'
-                '\\includegraphics[height=5cm]{sample}\n\n'
+                '\\begin{tikzpicture}[scale=2]\n'
+                '\\tikzstyle{every node}=[draw, shape=circle, scale = 0.9, thick]\n'
+                '\\path(1:0cm)\tnode(v0) [fill, text = white]{$v_0$};\n'
+                '\\path(180:1cm)\tnode(v1) [fill = red, red, text =white]{$v_1$};\n'
+                '\\path(90:1cm)\tnode(v2) [fill = red, red, text =white]{$v_2$};\n'
+                '\\path(0:1cm)\tnode(v3) [fill = red, red, text =white]{$v_3$};\n'
+                '\\path(270:1cm)\tnode(v4) [fill = red, red, text =white]{$v_4$};\n\n'
+                '%s\n\n' 
                 '\\begin{tabular}{| l | l | l | l |}\n'
                 '\\hline\n'
                 'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n'
-                % (str(one_ball_table[0]), one_ball_table[1], one_ball_table[2]))
+                % (str(one_ball_table[0]), one_ball_table[1], one_ball_table[2], oneballimages[n]))
+        n += 1
         firstpage = True
         table_len = 1
         for table_line in one_ball_table[3]:
@@ -305,7 +421,15 @@ def write_to_file(all_graphs):
         f.write('\\end{tabular}\n'
                 '\\end{center}\n'
                 '\\newpage\n')
-    f.write('\\end{document}')
+    f.write('\\begin{center}\n'
+            '\\title{Curvature Sharp Graphs}\n'
+            '\\begin{tabular}{|l|}\n'
+            '\\hline\n')
+    for graph in curvature_sharp_graphs:
+        f.write('%s\\\\ \\hline\n' %(graph))
+    f.write('\\end{tabular}\n'
+            '\\end{center}\n'
+            '\\end{document}')
     f.close()
 
 
@@ -319,17 +443,24 @@ def write_to_file(all_graphs):
     #     curvaturesharp.append(i)
 
 # menu()
-a = standardise([[1, 1, 1, 1, 1, 1]])
-b = outdeg(a)
-c = outdeg2(a)
-d = outdeg3(a)
-t1 = time.time()
-for i in range(1,1000000):
-    outdeg(a)
-t2 = time.time()
-print t2 - t1
-t1 = time.time()
-for i in range(1,1000000):
-    outdeg2(a)
-t2 = time.time()
-print t2 - t1
+# a = standardise([[1, 1, 1, 1, 1, 1]])
+# t1 = time.time()
+# for i in range(1,100000):
+#     partition(5)
+# t2 = time.time()
+# print t2 - t1
+# t1 = time.time()
+# for i in range(1,100000):
+#     partition2(5)
+# t2 = time.time()
+# print t2 - t1
+# a = [[1,1,0,0,1,1],[1,2,3,4]]
+# b = curvature.curv_calc(adjmat(a), 0)
+# c = curv_sharp(b, outdeg(a))
+# print outdeg(a)
+# print a
+# print b
+# print c
+#menu()
+
+print iso([[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]],[[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]])
