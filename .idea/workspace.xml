@@ -15,7 +15,7 @@
   </component>
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1532898180080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1533226038556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$thebestytestywesty.coverage" NAME="thebestytestywesty Coverage Results" MODIFIED="1531135915744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$testywesty.coverage" NAME="testywesty Coverage Results" MODIFIED="1530895487250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -24,8 +24,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="103" column="20" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
+            <state relative-caret-position="98">
+              <caret line="164" column="15" lean-forward="true" selection-start-line="163" selection-start-column="6" selection-end-line="164" selection-end-column="15" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -33,13 +33,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fromnumeric.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/fromnumeric.py">
+      <file leaf-file-name="numeric.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/numeric.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="1864" selection-start-line="1864" selection-end-line="1864" />
+            <state relative-caret-position="131">
+              <caret line="2391" selection-start-line="2391" selection-end-line="2391" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GraphCurvature8.pstat" pinned="false" current-in-tab="false">
+        <entry file="mock:///Users/leynamay/Library/Caches/PyCharm2018.1/snapshots/GraphCurvature8.pstat">
+          <provider selected="true" editor-type-id="profiler-session-editor" />
         </entry>
       </file>
       <file leaf-file-name="GraphCurvature7.pstat" pinned="false" current-in-tab="false">
@@ -477,7 +482,21 @@
       <option name="project" value="LOCAL" />
       <updated>1532897031133</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="optimised outdeg">
+      <created>1532898259079</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1532898259079</updated>
+    </task>
+    <task id="LOCAL-00036" summary="added graphs to latex file, iso broken">
+      <created>1533133754911</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1533133754911</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -497,7 +516,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
-      <window_info anchor="right" id="SciView" order="5" weight="0.47334412" />
+      <window_info anchor="right" id="SciView" order="5" weight="0.5355412" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.37179488" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -544,8 +563,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="normalised" />
-    <MESSAGE value="normalised, standard" />
     <MESSAGE value="standardised improved" />
     <MESSAGE value="don't return false" />
     <MESSAGE value="added test" />
@@ -569,27 +586,12 @@
     <MESSAGE value="optimized standardize" />
     <MESSAGE value="optimized twoball" />
     <MESSAGE value="optimised oneball" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimised oneball" />
+    <MESSAGE value="optimised outdeg" />
+    <MESSAGE value="added graphs to latex file, iso broken" />
+    <option name="LAST_COMMIT_MESSAGE" value="added graphs to latex file, iso broken" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>308</line>
-          <option name="timeStamp" value="140" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="143" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Main.py</url>
-          <line>326</line>
-          <option name="timeStamp" value="149" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -597,11 +599,26 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="150" />
+      <option name="time" value="181" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>j[i]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>j[i-1]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>h[1:]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>d = map(3-int, col_sum)</expression-string>
         <language-id>Python</language-id>
@@ -644,20 +661,6 @@ x = outdeg(z)
 curv = curvature.curv_calc(y, 0)
 curvsharp = curv_sharp(curv, x)
 return curvsharp</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>z = [[0, 0, 0, 0, 0, 0], [1, 2, 3, 4], [1, 2], [1, 3], [2, 4], [3, 4]]
-y = adjmat(z)
-x = outdeg(z)
-curv = curvature.curv_calc(y, 0)
-curvsharp = curv_sharp(curv, x)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>curv_sharp(curv, b)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -919,13 +922,6 @@ curvsharp = curv_sharp(curv, x)</expression-string>
     <entry file="file://C:/Python27/Lib/site-packages/numpy/linalg/linalg.py" />
     <entry file="file://$PROJECT_DIR$/thebestytestywesty.py" />
     <entry file="file://$PROJECT_DIR$/testywesty.py" />
-    <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/numeric.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="35550">
-          <caret line="2390" selection-start-line="2390" selection-end-line="2390" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitattributes">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -957,10 +953,17 @@ curvsharp = curv_sharp(curv, x)</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/numeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="2391" selection-start-line="2391" selection-end-line="2391" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="103" column="20" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
+        <state relative-caret-position="98">
+          <caret line="164" column="15" lean-forward="true" selection-start-line="163" selection-start-column="6" selection-end-line="164" selection-end-column="15" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -124,7 +124,7 @@ def curv_sharp(curve, outdeg):
         return False
 
 
-def iso(g1, g2):
+def isobroken(g1, g2):
     g1_std = standardise(g1)
     g2_std = standardise(g2)
     a = g1_std[1:]
@@ -137,6 +137,9 @@ def iso(g1, g2):
         m1 = one_ball(g1_std[0])
         m2 = one_ball(g2_std[0])
         for i in p:
+            # if i == (0,3,2,1):
+                # print m1
+                # print m2
             anew = a[:]
             m1_new = m1[i, :]
             m1_new = m1_new[:, i]
@@ -152,6 +155,66 @@ def iso(g1, g2):
                 if anew == b:
                     return True
         return False
+
+
+class Node:
+    def __init__(self):
+        self.neighbours = []
+        self.visited = False
+    # def __eq__(self, other):
+    #     return self.neighbours == other.neighbours
+
+
+
+#def iso(g1, g2):
+
+def createnet(g):
+    num_2ball = len(g[1:])
+    network = []
+    #
+    networkdict = {}
+    #
+    for i in range(4+num_2ball):
+        network.append(Node())
+        #
+        networkdict[i] = []
+        #
+    #Establish one ball connections
+    j = (1, 1, 1, 2, 2, 3)
+    k = (2, 3, 4, 3, 4, 4)
+    for i in range(6):
+        if g[0][i] == 1:
+            network[j[i-1]].neighbours.append(network[k[i]-1])
+            network[k[i-1]].neighbours.append(network[j[i]-1])
+            #
+            networkdict[j[i]-1].append(k[i]-1)
+            networkdict[k[i]-1].append(j[i]-1)
+            #
+    #Establish two ball connections
+    for i in range(num_2ball):
+        node1 = i+4
+        for j in range(len(g[i+1])):
+            node2 = g[i+1][j]-1
+            network[node1].neighbours.append(network[node2])
+            network[node2].neighbours.append(network[node1])
+            #
+            networkdict[node1].append(node2)
+            networkdict[node2].append(node1)
+            #
+    #
+    print networkdict
+    #
+    return network
+
+
+
+
+
+
+
+
+
+
 
 
 def partition(n):
@@ -388,7 +451,8 @@ def write_to_file(all_graphs):
                 '\\path(90:1cm)\tnode(v2) [fill = red, red, text =white]{$v_2$};\n'
                 '\\path(0:1cm)\tnode(v3) [fill = red, red, text =white]{$v_3$};\n'
                 '\\path(270:1cm)\tnode(v4) [fill = red, red, text =white]{$v_4$};\n\n'
-                '%s\n\n' 
+                '%s\n\n'
+                '\\vspace{1cm}\n'
                 '\\begin{tabular}{| l | l | l | l |}\n'
                 '\\hline\n'
                 'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n'
@@ -398,7 +462,7 @@ def write_to_file(all_graphs):
         table_len = 1
         for table_line in one_ball_table[3]:
             f.write('%i & %s & %.3f & %s \\\\ \\hline\n' % (index, str(table_line[0]), table_line[1], table_line[2]))
-            if table_len%50 == 0 and not firstpage:
+            if table_len%47 == 0 and not firstpage:
                 f.write('\\end{tabular}\n'
                         '\\end{center}\n'
                         '\\newpage\n'
@@ -406,7 +470,7 @@ def write_to_file(all_graphs):
                         '\\begin{tabular}{| l | l | l | l |}\n'
                         '\\hline\n'
                         'Index & Two Ball & Curvature & Curvature Sharp \\\\ \\hline\n')
-            if table_len % 25 == 0 and firstpage:
+            if table_len % 30 == 0 and firstpage:
                 f.write('\\end{tabular}\n'
                         '\\end{center}\n'
                         '\\newpage\n'
@@ -463,4 +527,13 @@ def write_to_file(all_graphs):
 # print c
 #menu()
 
-print iso([[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]],[[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]])
+a = [[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]]
+b = [[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]]
+c = [[1,0,1,1,0,1], [3,4], [1], [2]]
+#print iso(a,b)
+# adj_a = adjmat(a)
+# adj_b = adjmat(b)
+# c=10
+net1 = createnet(a)
+net2 = createnet(b)
+print net1 == net2
