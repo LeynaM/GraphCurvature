@@ -161,50 +161,62 @@ class Node:
     def __init__(self):
         self.neighbours = []
         self.visited = False
-    # def __eq__(self, other):
-    #     return self.neighbours == other.neighbours
+
+    def __iadd__(self, neighbour):
+        self.neighbours.append(neighbour)
+        return self
+
+    def __len__(self):
+        return len(self.neighbours)
 
 
-
-#def iso(g1, g2):
-
-def createnet(g):
-    num_2ball = len(g[1:])
-    network = []
-    #
-    networkdict = {}
-    #
-    for i in range(4+num_2ball):
-        network.append(Node())
+class Network:
+    def __init__(self, g):
+        num_2ball = len(g[1:])
+        network = []
         #
-        networkdict[i] = []
+        networkdict = {}
         #
-    #Establish one ball connections
-    j = (1, 1, 1, 2, 2, 3)
-    k = (2, 3, 4, 3, 4, 4)
-    for i in range(6):
-        if g[0][i] == 1:
-            network[j[i-1]].neighbours.append(network[k[i]-1])
-            network[k[i-1]].neighbours.append(network[j[i]-1])
+        for i in range(4+num_2ball):
+            network.append(Node())
             #
-            networkdict[j[i]-1].append(k[i]-1)
-            networkdict[k[i]-1].append(j[i]-1)
+            networkdict[i] = []
             #
-    #Establish two ball connections
-    for i in range(num_2ball):
-        node1 = i+4
-        for j in range(len(g[i+1])):
-            node2 = g[i+1][j]-1
-            network[node1].neighbours.append(network[node2])
-            network[node2].neighbours.append(network[node1])
-            #
-            networkdict[node1].append(node2)
-            networkdict[node2].append(node1)
-            #
-    #
-    print networkdict
-    #
-    return network
+        # for i in range(len(network)):
+        #     print "%i + %s" % (i, network[i])
+        #Establish one ball connections
+        j = (1, 1, 1, 2, 2, 3)
+        k = (2, 3, 4, 3, 4, 4)
+        for i in range(6):
+            if g[0][i] == 1:
+                node1 = network[j[i]-1]
+                node2 = network[k[i]-1]
+                node1 += node2
+                node2 += node1
+                #
+                networkdict[j[i]-1].append(k[i]-1)
+                networkdict[k[i]-1].append(j[i]-1)
+                #
+        #Establish two ball connections
+        for i in range(num_2ball):
+            node1 = network[i+4]
+            for j in range(len(g[i+1])):
+                node2 = network[g[i+1][j]-1]
+                node1 += node2
+                node2 += node1
+                #
+                networkdict[i+4].append(g[i+1][j]-1)
+                networkdict[g[i+1][j]-1].append(i+4)
+                #
+        #
+        print networkdict
+        #
+        network.sort(key=len, reverse=True)
+        self.network = network
+        degrees = []
+        for node in network:
+            degrees.append(len(node))
+        self.degrees = degrees
 
 
 
@@ -497,6 +509,24 @@ def write_to_file(all_graphs):
     f.close()
 
 
+def completegraph(g):
+    std = standardise(g)
+    two_ball_vertices = std[1:]
+    vertexnumber = len(two_ball_vertices)
+    for vertex in two_ball_vertices:
+        degree = len(vertex)
+        if degree == 4:
+            break
+        else:
+            while degree <= 4:
+                for i in range(5, 5+vertexnumber):
+                    vertex.append(i)
+                    two_ball_vertices[i-5].append(vertex)
+                    degree += 1
+    return std
+
+
+
     # positivecurvature = []
     # curvaturesharp = []
     # curv = curvature.curv_calc(adjmat(i), 0)
@@ -534,6 +564,8 @@ c = [[1,0,1,1,0,1], [3,4], [1], [2]]
 # adj_a = adjmat(a)
 # adj_b = adjmat(b)
 # c=10
-net1 = createnet(a)
-net2 = createnet(b)
-print net1 == net2
+net1 = Network(a)
+# net2 = createnet(b)
+#print net1 == net2
+
+# print completegraph([[1, 0, 0, 0, 0, 1], [1, 2], [2, 3], [3, 4], [1, 4]])
