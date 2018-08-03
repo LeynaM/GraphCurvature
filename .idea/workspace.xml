@@ -15,7 +15,7 @@
   </component>
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1533226038556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1533327000279" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$thebestytestywesty.coverage" NAME="thebestytestywesty Coverage Results" MODIFIED="1531135915744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$testywesty.coverage" NAME="testywesty Coverage Results" MODIFIED="1530895487250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -24,8 +24,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="98">
-              <caret line="164" column="15" lean-forward="true" selection-start-line="163" selection-start-column="6" selection-end-line="164" selection-end-column="15" />
+            <state relative-caret-position="314">
+              <caret line="533" column="14" lean-forward="true" selection-start-line="533" selection-start-column="14" selection-end-line="533" selection-end-column="14" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -496,8 +496,31 @@
       <option name="project" value="LOCAL" />
       <updated>1533133754911</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="created Node class and network function">
+      <created>1533226210160</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1533226210160</updated>
+    </task>
+    <task id="LOCAL-00038" summary="network is class now and nodes sorted by number of degrees(neighbours)">
+      <created>1533302306354</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1533302306354</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -508,7 +531,7 @@
       <window_info anchor="right" x="0" y="0" width="270" height="600" id="Documentation" order="6" side_tool="true" weight="0.18093699" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4966443" visible="true" weight="0.3148148" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.4391635" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.43874645" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32763532" />
       <window_info anchor="right" id="Coverage" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3263158" />
@@ -563,8 +586,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="standardised improved" />
-    <MESSAGE value="don't return false" />
     <MESSAGE value="added test" />
     <MESSAGE value="fixed iso" />
     <MESSAGE value="partitions" />
@@ -588,10 +609,34 @@
     <MESSAGE value="optimised oneball" />
     <MESSAGE value="optimised outdeg" />
     <MESSAGE value="added graphs to latex file, iso broken" />
-    <option name="LAST_COMMIT_MESSAGE" value="added graphs to latex file, iso broken" />
+    <MESSAGE value="created Node class and network function" />
+    <MESSAGE value="network is class now and nodes sorted by number of degrees(neighbours)" />
+    <option name="LAST_COMMIT_MESSAGE" value="network is class now and nodes sorted by number of degrees(neighbours)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>531</line>
+          <option name="timeStamp" value="197" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>526</line>
+          <option name="timeStamp" value="199" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>529</line>
+          <option name="timeStamp" value="200" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>523</line>
+          <option name="timeStamp" value="204" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -599,7 +644,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="181" />
+      <option name="time" value="205" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -962,8 +1007,8 @@ return curvsharp</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="98">
-          <caret line="164" column="15" lean-forward="true" selection-start-line="163" selection-start-column="6" selection-end-line="164" selection-end-column="15" />
+        <state relative-caret-position="314">
+          <caret line="533" column="14" lean-forward="true" selection-start-line="533" selection-start-column="14" selection-end-line="533" selection-end-column="14" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

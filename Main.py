@@ -218,6 +218,12 @@ class Network:
             degrees.append(len(node))
         self.degrees = degrees
 
+    def __eq__(self, other):
+        if self.degrees != other.degrees:
+            return False
+
+    #def path(self, node1, node2):
+
 
 
 
@@ -513,16 +519,18 @@ def completegraph(g):
     std = standardise(g)
     two_ball_vertices = std[1:]
     vertexnumber = len(two_ball_vertices)
-    for vertex in two_ball_vertices:
-        degree = len(vertex)
-        if degree == 4:
-            break
-        else:
-            while degree <= 4:
-                for i in range(5, 5+vertexnumber):
-                    vertex.append(i)
-                    two_ball_vertices[i-5].append(vertex)
-                    degree += 1
+    for j in range(vertexnumber):
+        degree = len(two_ball_vertices[j])
+        while degree < 4:
+            for i in range(5, 5+vertexnumber):
+                if i != j+5:
+                    while i not in two_ball_vertices[j] and degree < 4:
+                        two_ball_vertices[j].append(i)
+                        degree += 1
+                    while j + 5 not in two_ball_vertices[i - 5] and len(two_ball_vertices[i-5]) < 4:
+                        two_ball_vertices[i-5].append(j+5)
+            if degree == 4:
+                break
     return std
 
 
@@ -564,8 +572,8 @@ c = [[1,0,1,1,0,1], [3,4], [1], [2]]
 # adj_a = adjmat(a)
 # adj_b = adjmat(b)
 # c=10
-net1 = Network(a)
-# net2 = createnet(b)
+# net1 = Network(a)
+# net2 = Network(b)
 #print net1 == net2
 
-# print completegraph([[1, 0, 0, 0, 0, 1], [1, 2], [2, 3], [3, 4], [1, 4]])
+print completegraph([[1, 0, 0, 0, 0, 1], [1, 2], [2, 3], [3, 4], [1, 4]])
