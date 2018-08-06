@@ -48,7 +48,7 @@ def norm(g):
 
 
 def standardise(g):
-    gnew = g[:]
+    gnew = copy.deepcopy(g)
     adjmatrix = adjmat(gnew)
     col_sum = np.sum(adjmatrix[1:,1:5], axis=0)
     for i in range(4):
@@ -125,8 +125,8 @@ def curv_sharp(curve, outdeg):
 
 
 def isobroken(g1, g2):
-    g1_std = standardise(g1)
-    g2_std = standardise(g2)
+    g1_std = standardise(copy.deepcopy(g1))
+    g2_std = standardise(copy.deepcopy(g2))
     a = g1_std[1:]
     b = g2_std[1:]
     len_a = len(a)
@@ -137,12 +137,14 @@ def isobroken(g1, g2):
         m1 = one_ball(g1_std[0])
         m2 = one_ball(g2_std[0])
         for i in p:
-            # if i == (0,3,2,1):
+
                 # print m1
                 # print m2
-            anew = a[:]
+            anew =copy.deepcopy(a)
             m1_new = m1[i, :]
             m1_new = m1_new[:, i]
+            # if i == (0, 3, 2, 1):
+            #     print m1, m2, m1_new, m2
             if np.array_equal(m1_new, m2):
                 for j in range(len_a):
                     for k in range(len(a[j])):
@@ -221,19 +223,29 @@ class Network:
     def __eq__(self, other):
         if self.degrees != other.degrees:
             return False
-
-    #def path(self, node1, node2):
-
-
-
-
-
-
-
-
-
-
-
+        fixed_node = self.network[0]
+        i = 0
+        while other.degrees[0] == other.degrees[i]:
+            starting_node = other.network[i]
+            if self.path(fixed_node, starting_node):
+                return True
+        return False
+    def path(self, node1, node2):
+        self.path = path
+        if len(node1) != len(node2):
+            return False
+        num_visited_1 = 0
+        num_visited_2 = 0
+        for i in range(len(node1)):
+            if node1.neighbours[i].visited:
+                num_visited_1 += 1
+            if node2.neighbours[i].visited:
+                num_visited_2 += 1
+            for neighbour in node1.neighbours:
+                for neighbour2 in node2.neighbour:
+                    if not neighbour.visited and not neighbour2.visited:
+                        path(self, neighbour, neighbour2)
+                return False
 
 def partition(n):
     m = [[n]]
@@ -255,6 +267,7 @@ def fill_twoballs(b, part, two_sphere, h, vertices):
         for i in range(4):
             for j in range(b[i]):
                 new_two_sphere = new_two_sphere + [[i+1]]
+        new_two_sphere.sort()
         if new_two_sphere not in h:
             h.append(new_two_sphere)
         return
@@ -269,6 +282,7 @@ def fill_twoballs(b, part, two_sphere, h, vertices):
             b_new[i-1] -= 1
         if valid:
             new_two_sphere = two_sphere + [a]
+            new_two_sphere.sort()
             fill_twoballs(b_new, part_new, new_two_sphere, h, vertices)
     return
 
@@ -297,16 +311,45 @@ def generate():
             twoball = [oneball]
             h = []
             fill_twoballs(b, part, twoball, h, vertices)
-            unique_h = [h[0]]
+            h = [ [[1,0,0,0,0,1],[1,3],[1,3],[2,4],[2,4]] , [[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]] ]
+            unique_h = copy.deepcopy([h[0]])
             for i in h[1:]:
+                notisomorphic = True
                 for j in unique_h:
                     k = copy.deepcopy(i)
                     l = copy.deepcopy(j)
-                    isomorphic = iso(k, l)
+                    uu = copy.deepcopy(i)
+                    vv = copy.deepcopy(j)
+                    # if j == [[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]] and i == [[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]:
+                    #     print i, j
+                    #     print isobroken(i, i),isobroken(i[:],j[:]),isobroken(j,i),isobroken(j,j)
+                    #     print isobroken(k,l), isobroken([[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]],[[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]])
+                    #     k=[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]
+                    #     l=[[1,0,0,0,0,1],[1,3],[1,3],[2,4],[2,4]]
+                    #     aaa=k
+                    #     zzz=l
+                    #     print k==aaa, l==zzz
+                        #print isobroken(k,l)
+                        # print k,l
+                        #print isobroken(aaa,zzz)
+                        # print uu==k,vv==l
+                        # print isobroken(uu, vv)
+                    isomorphic = isobroken(k, l)
+                    # if i == [[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]] and j == [[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]:
+                    #     print isomorphic
+                    #     print isobroken([[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]],[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]])
+                    #     print isobroken(i, j)
                     if isomorphic:
+                        # if i == [[1, 0, 0, 0, 0, 1], [1, 3], [1, 3], [2, 4], [2, 4]] and j == [[1, 0, 0, 0, 0, 1],
+                        #                                                                        [1, 4], [1, 4], [2, 3],
+                        #                                                                        [2, 3]]:
+                        #     print i, j
+                        notisomorphic = False
                         break
-                else:
-                    unique_h.append(i)
+                    # else:
+                    #     print i
+                if notisomorphic:
+                    unique_h.append(k)
             one_ball_graphs += unique_h
         all_two_balls.append(one_ball_graphs)
     # length = 0
@@ -327,6 +370,59 @@ def generate():
     # print "Number of graphs that are curvature sharp: ", len(curvaturesharp)
     all_two_balls.append([[[1, 1, 1, 1, 1, 1]]])
     return all_two_balls
+
+
+def testgenerate():
+    oneballs = [ [1,0,0,0,0,1] ]
+    vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
+                          [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+                          [[1, 2, 3, 4]]]
+    all_two_balls = []
+    for oneball in oneballs:
+        b = outdeg([oneball])
+        n = sum(b)
+        l = 0
+        for i in range(4):
+            if b[i] != 0:
+                l += 1
+        parts = partition(n)
+        partsnew = []
+        for a in parts:
+            length_a = len(a)
+            max_a = max(a)
+            if max_a <= l and max(b) <= length_a:
+                partsnew.append(a)
+        one_ball_graphs = []
+        partsnew = [ [2,2,2,2] ]
+        for part in partsnew:
+            twoball = [oneball]
+            h = []
+            fill_twoballs(b, part, twoball, h, vertices)
+            print h
+            print h[0]
+            unique_h = copy.deepcopy([h[0]])
+            for i in h[1:]:
+                notisomorphic = True
+                for j in unique_h:
+                    k = copy.deepcopy(i)
+                    l = copy.deepcopy(j)
+                    if l == [[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]] and k == [[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]:
+                        print isobroken(l,k)
+                        print l,k
+                        print l==[[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]], k==[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]
+                        print isobroken([[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]],[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]])
+                    isomorphic = isobroken(i, j)
+                    if isomorphic:
+                        notisomorphic = False
+                        break
+                if notisomorphic:
+                    unique_h.append(k)
+            one_ball_graphs += unique_h
+        all_two_balls.append(one_ball_graphs)
+    all_two_balls.append([[[1, 1, 1, 1, 1, 1]]])
+    return all_two_balls
+
+
 
 def write_to_file(all_graphs):
     oneballimages = ['\\draw(v0) -- (v1)\n'
@@ -514,7 +610,7 @@ def write_to_file(all_graphs):
             '\\end{document}')
     f.close()
 
-
+#this is wrong!
 def completegraph(g):
     std = standardise(g)
     two_ball_vertices = std[1:]
@@ -524,7 +620,7 @@ def completegraph(g):
         while degree < 4:
             for i in range(5, 5+vertexnumber):
                 if i != j+5:
-                    while i not in two_ball_vertices[j] and degree < 4:
+                    while i not in two_ball_vertices[j] and degree < 4 and len(two_ball_vertices[i-5]) < 4:
                         two_ball_vertices[j].append(i)
                         degree += 1
                     while j + 5 not in two_ball_vertices[i - 5] and len(two_ball_vertices[i-5]) < 4:
@@ -544,7 +640,7 @@ def completegraph(g):
     # if curv_sharp(curv, b):
     #     curvaturesharp.append(i)
 
-# menu()
+#menu()
 # a = standardise([[1, 1, 1, 1, 1, 1]])
 # t1 = time.time()
 # for i in range(1,100000):
@@ -563,12 +659,17 @@ def completegraph(g):
 # print a
 # print b
 # print c
-#menu()
 
-a = [[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]]
-b = [[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]]
-c = [[1,0,1,1,0,1], [3,4], [1], [2]]
-#print iso(a,b)
+
+menu()
+
+a = [[1, 0, 0, 0, 0, 1], [1, 3], [1, 3], [2, 4], [2, 4]]
+b = [[1, 0, 0, 0, 0, 1], [1, 4], [1, 4], [2, 3], [2, 3]]
+c = copy.deepcopy(a)
+d = copy.deepcopy(b)
+l =[[1, 0, 0, 0, 0, 1],[1,3],[1,3],[2,4],[2,4]]
+k =[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]]
+#print isobroken(a, b), isobroken(c, d)
 # adj_a = adjmat(a)
 # adj_b = adjmat(b)
 # c=10
@@ -576,4 +677,12 @@ c = [[1,0,1,1,0,1], [3,4], [1], [2]]
 # net2 = Network(b)
 #print net1 == net2
 
-print completegraph([[1, 0, 0, 0, 0, 1], [1, 2], [2, 3], [3, 4], [1, 4]])
+# print generate()
+# print completegraph([[1, 0, 0, 0, 0, 1], [1, 2], [2, 3], [3, 4], [1, 4]])
+
+# h = [ [[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3] ],[[1,0,0,0,0,1],[1,4],[1,4],[2,3],[2,3]] ]
+# unique_h = [ [[1,0,0,0,0,1],[1,3],[1,3],[2,4],[2,4]]]
+# for i in h[1:]:
+#     for j in unique_h:
+#         print i,j
+#         print isobroken(i,j)
