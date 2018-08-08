@@ -503,22 +503,63 @@ def write_to_file(all_graphs):
 
 #from now on functions working with completed graphs
 
-def complete_twoball(g):
-    vertices = []
-    gst = standardise(g)
+def complete_twoball(standardised_g):
+    complete_graphs = []
+    gst= copy.deepcopy(standardised_g)
     twoballvertices = len(gst[1:])
-    d = [[0,0] for i in range(twoballvertices)]
+    d = []
     for j in range(twoballvertices):
-        d[j][0] = j + 5
-        d[j][1] = 4 - len(gst[1:][j])
-    for vertex in d:
-        for k in range(vertex[1]):
-            vertices.append(vertex[0])
+        d.append([j+5, 4-len(gst[1:][j])])
+    part = [2 for i in range(int(0.5 * (sum(edge[1] for edge in d))))]
+    fill_brackets(gst, d, part, complete_graphs)
+    return complete_graphs
+
+
+
+def fill_brackets(g, d, part, complete_graphs):
+    if len(part)==0:
+        complete_graphs.append(g)
+    p = part[0]
+    part_new = part[1:]
+    d_new = copy.deepcopy(d)
+    valid = True
+    for vertex1 in d_new:
+        for vertex2 in d_new:
+            if vertex1 != vertex2:
+                if len(part) == 0:
+                    valid = False
+                    return
+                if vertex1[1] > len(part) and vertex2[1] > len(part):
+                    valid = False
+                if valid:
+                    if vertex1[1] and vertex2[1] >0:
+                        vertex1[1] -= 1
+                        vertex2[1] -= 1
+                        g_new = copy.deepcopy(g) + [[vertex1[0], vertex2[0]]]
+                        fill_brackets(g_new, d_new, part_new, complete_graphs)
 
 
 
 
-print complete_twoball([[0, 0, 0, 0, 0, 0],[2, 3,1], [4],[1, 4],[1, 4],[2, 3]])
+"""
+part_new = part[1:]
+    for a in vertices[p - 2]:
+        valid = True
+        b_new = copy.deepcopy(b)
+        for i in a:
+            if b[i-1] == 0:
+                valid = False
+            b_new[i-1] -= 1
+        if valid:
+            new_two_sphere = two_sphere + [a]
+            fill_twoballs(b_new, part_new, new_two_sphere, h, vertices)
+    return
+"""
+
+
+
+
+print complete_twoball([[1, 0, 0, 0, 0, 1], [2, 3, 4], [1, 2], [1, 4], [3]])
 def remove_spherical(completed_g):
     gnew = copy.deepcopy(completed_g)
     toremove = []
