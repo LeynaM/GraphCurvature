@@ -1,5 +1,7 @@
 import numpy as np
+import itertools
 from itertools import permutations
+from itertools import combinations
 import time
 import CurvatureCalculator as curvature
 import copy
@@ -10,7 +12,7 @@ import ast
 def menu():
     run = True
     while run:
-        print "Menu\n1. Evaluate a graph\n2. Generate latex document of all the graphs\n3. Exit"
+        print "Menu\n1. Evaluate a graph\n2. Generate latex document of all the graphs\n3. Give complete two-balls and their curvatures\n4. Exit"
         input = raw_input("Select: ")
         if input == "1":
             g_in = raw_input("Input a graph: ")
@@ -26,6 +28,14 @@ def menu():
             all_graphs = generate()
             write_to_file(all_graphs)
         elif input == "3":
+            g_in2 = raw_input("Input a graph: ")
+            g2 = ast.literal_eval(g_in2)
+            gs2 = standardise(g2)
+            completed = complete_twoball(gs2)
+            for graph in completed:
+                curvature_list = curvatures(graph)
+                print "\nTwo-ball: %s\nCurvatures: %s" % (graph, curvature_list)
+        elif input == "4":
             run = False
         else:
             print "\nInvalid input\n\n"
@@ -36,17 +46,6 @@ def get_oneballs():
                 [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [1, 1, 0, 0, 1, 0], [1, 1, 0, 0, 1, 1],
                 [1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1]]
 
-
-def norm(g):
-    gnorm = [g[0]]
-    for i in range(1, len(g)):
-        leaf = [0, 0, 0, 0]
-        for j in range(len(g[i])):
-            leaf[g[i][j] - 1] = 1
-        gnorm.append(leaf)
-    return gnorm
-
-
 def standardise(g):
     gnew = copy.deepcopy(g)
     adjmatrix = adjmat(gnew)
@@ -56,8 +55,10 @@ def standardise(g):
         if col != 0:
             for j in range(col):
                 gnew.append([i + 1])
-    return gnew
+    gnew.sort(key =itemgetter(0))
+    gnew.sort(key=len, reverse=True)
 
+    return gnew
 
 def adjmat(g):
     length = len(g)
@@ -298,20 +299,7 @@ def generate():
 
             one_ball_graphs += unique_h
         all_two_balls.append(one_ball_graphs)
-    # length = 0
-    # print "All of the graphs:"
-    # for oneballsubset in all_two_balls:
-    #     length += len(oneballsubset)
-    #     for graph in oneballsubset:
-    #         print graph
-    # print all_two_balls
-    # print "Number of graphs generated: ", length
     all_two_balls.append([[[1, 1, 1, 1, 1, 1]]])
-    n = 0
-    for list in all_two_balls:
-        for list2 in list:
-            n += len(list2)
-    print n
     return all_two_balls
 
 
@@ -503,63 +491,79 @@ def write_to_file(all_graphs):
 
 #from now on functions working with completed graphs
 
+
+def curvatures(completed_g):
+    curvatures = []
+    for v in range(4 +len(remove_spherical(completed_g))):
+        curv = round(curvature.curv_calc(comp_adjmat(completed_g), v), 3)
+        if curv < 0:
+            return 'Negative Curvature'
+            break
+        else:
+            curvatures.append(curv)
+    curvatures.sort(reverse=True)
+    return curvatures
+
+def iso_complete(g1, g2):
+    if curvatures(g1) != curvatures(g2):
+        return False
+
 def complete_twoball(standardised_g):
+    sorted_complete_graphs = []
     complete_graphs = []
-    gst= copy.deepcopy(standardised_g)
+    gst = copy.deepcopy(standardised_g)
     twoballvertices = len(gst[1:])
     d = []
+    vertices = []
     for j in range(twoballvertices):
-        d.append([j+5, 4-len(gst[1:][j])])
-    part = [2 for i in range(int(0.5 * (sum(edge[1] for edge in d))))]
-    fill_brackets(gst, d, part, complete_graphs)
-    return complete_graphs
+        d.append(4 - len(gst[1:][j]))
+    for k in range(len(d)):
+        if d[k] != 0:
+            vertices.append(5+k)
+    d.sort(reverse=True)
+    vertices.sort(reverse=True)
+    fillbrackets(d, vertices, complete_graphs, gst)
+    for graph in complete_graphs:
+        a = graph[:len(standardised_g)]
+        b = graph[len(standardised_g):]
+        b.sort(key=itemgetter(1))
+        b.sort(key=itemgetter(0))
+        for i in b:
+            a.append(i)
+        sorted_complete_graphs.append(a)
+    # complete_graphs = [sorted_complete_graphs[0]]
+    # for graph1 in sorted_complete_graphs[1:]:
+    #     for graph2 in complete_graphs:
+    #         if not iso_complete(graph1, graph2):
+    #             complete_graphs.append(graph1)
+    return sorted_complete_graphs
 
 
 
-def fill_brackets(g, d, part, complete_graphs):
-    if len(part)==0:
+
+def fillbrackets(d, vertices, complete_graphs, g):
+    if vertices == []:
         complete_graphs.append(g)
-    p = part[0]
-    part_new = part[1:]
-    d_new = copy.deepcopy(d)
-    valid = True
-    for vertex1 in d_new:
-        for vertex2 in d_new:
-            if vertex1 != vertex2:
-                if len(part) == 0:
-                    valid = False
-                    return
-                if vertex1[1] > len(part) and vertex2[1] > len(part):
-                    valid = False
-                if valid:
-                    if vertex1[1] and vertex2[1] >0:
-                        vertex1[1] -= 1
-                        vertex2[1] -= 1
-                        g_new = copy.deepcopy(g) + [[vertex1[0], vertex2[0]]]
-                        fill_brackets(g_new, d_new, part_new, complete_graphs)
-
-
-
-
-"""
-part_new = part[1:]
-    for a in vertices[p - 2]:
-        valid = True
-        b_new = copy.deepcopy(b)
-        for i in a:
-            if b[i-1] == 0:
-                valid = False
-            b_new[i-1] -= 1
-        if valid:
-            new_two_sphere = two_sphere + [a]
-            fill_twoballs(b_new, part_new, new_two_sphere, h, vertices)
+    subsets = list(itertools.combinations(vertices[1:], d[0]))
+    vertex_saturation = []
+    for comb in subsets:
+        vertex_saturation.append(list(comb))
+    if vertex_saturation != [[]]:
+        for choice in vertex_saturation:
+            d_new = copy.deepcopy(d[1:])
+            vertices_new = copy.deepcopy(vertices[1:])
+            g_new = copy.deepcopy(g)
+            for i in choice:
+                g_new.append([i, vertices[0]])
+                d_new[-(i-4)] -= 1
+                if d_new[-(i-4)] == 0:
+                    vertices_new.remove(i)
+            fillbrackets(d_new, vertices_new, complete_graphs, g_new)
     return
-"""
 
 
 
 
-print complete_twoball([[1, 0, 0, 0, 0, 1], [2, 3, 4], [1, 2], [1, 4], [3]])
 def remove_spherical(completed_g):
     gnew = copy.deepcopy(completed_g)
     toremove = []
@@ -593,29 +597,24 @@ def diam_less_than_2(completed_g):
                 return False
     return True
 
-def curvatures(completed_g):
-    curvatures = []
-    for v in range(4 +len(remove_spherical(completed_g))):
-        curv = round(curvature.curv_calc(comp_adjmat(completed_g), v), 3)
-        if curv < 0:
-            return 'Negative Curvature:', True
-            break
-        else:
-            curvatures.append(curv)
-    curvatures.sort(reverse=True)
-    return curvatures
-
 
 
 
 #print curvatures([[1, 0, 0, 0, 0, 1], [2, 3],[1, 2], [1, 4], [3, 4], [5, 6],[6,7],[7,8],[5,8]])
 
 
+# alll = complete_twoball(standardise([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4]]))
+# n=0
+# for a in alll:
+#     n += 1
+#     print a
+# print n
 
 a = [[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]]
 b = [[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]]
 
-
-#menu()
+menu()
 #print diam_less_than_2([[0, 0, 0, 0, 0, 0], [1, 2, 3, 4],[1, 2, 3, 4],[1], [2], [3,4]])
 #generate()
+
+#print remove_spherical(complete_twoball(standardise([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4]]))[0])
