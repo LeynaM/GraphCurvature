@@ -597,23 +597,101 @@ def diam_less_than_2(completed_g):
                 return False
     return True
 
+def recentre(adjmatrix, x):
+    if x == 0:
+        return adjmatrix
+    else:
+        newmatrix = adjmatrix[:][:]
+        copy = newmatrix[:, 0].copy()
+        newmatrix[:, 0] = newmatrix[:, x]
+        newmatrix[:, x] = copy
+        copy = newmatrix[0, :].copy()
+        newmatrix[0, :] = newmatrix[x, :]
+        newmatrix[x, :] = copy
+        j = 1
+        for i in range(len(adjmatrix)):
+            if adjmatrix[i][x] == 1:
+                copy = newmatrix[:, i].copy()
+                newmatrix[:, i] = newmatrix[:, x]
+                newmatrix[:, x] = copy
+                copy = newmatrix[i, :].copy()
+                newmatrix[i, :] = newmatrix[x, :]
+                newmatrix[x, :] = copy
+                j += 1
+        oneball = [x]
+        twoball = []
+        contained = True
+        for a in range(len(newmatrix)):
+            if newmatrix[x][a]==1:
+                oneball.append(a)
+        for b in range(len(newmatrix)):
+            for c in oneball[1:]:
+                if newmatrix[b][c] == 1:
+                    if b not in twoball and b not in oneball:
+                        twoball.append(b)
+        twoball.sort
+        twoball_vertices = oneball + twoball
+        for vertex in range(len(newmatrix)):
+            if vertex not in twoball_vertices:
+                contained = False
+    #   print 'graph contained in 2-ball:', contained
+    #print newmatrix
+
+    edges = [[oneball[1], oneball[2]], [oneball[1], oneball[3]], [oneball[1], oneball[4]], [oneball[2], oneball[3]], [oneball[2], oneball[4]], [oneball[3], oneball[4]]]
+    oneball_list = [0, 0, 0, 0, 0, 0]
+    for j in oneball[1:]:
+        for k in oneball[2:]:
+            if newmatrix[j][k]== 1:
+                for l in range(len(edges)):
+                    if edges[l] == [j, k]:
+                        oneball_list[l] = 1
+    graph = [oneball_list]
+    for vertex2 in twoball:
+        vertexlist = []
+        for vertex1 in oneball:
+            if newmatrix[vertex1][vertex2] == 1:
+                for i in range(len(oneball[1:])+1):
+                    if oneball[i] == vertex1:
+                        vertexlist.append(i)
+        graph.append(vertexlist)
+    graph.sort
+    graph.sort(key=len, reverse=True)
+    for vertex_a in twoball:
+        for vertex_b in twoball[1:]:
+            if newmatrix[vertex_a][vertex_b] == 1:
+                for j in range(len(twoball)):
+                    if twoball[j] == vertex_a:
+                        a = j+5
+                for k in range(len(twoball)):
+                    if twoball[k] == vertex_b:
+                        b = k+5
+                new_edge = sorted([a, b])
+                if new_edge not in graph:
+                    graph.append(new_edge)
+
+    return graph
 
 
 
-#print curvatures([[1, 0, 0, 0, 0, 1], [2, 3],[1, 2], [1, 4], [3, 4], [5, 6],[6,7],[7,8],[5,8]])
 
 
-# alll = complete_twoball(standardise([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4]]))
-# n=0
-# for a in alll:
-#     n += 1
-#     print a
-# print n
+
+
+print recentre(comp_adjmat([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4], [3], [4], [5, 6], [5, 8],[6,9],[7,9],[7,10],[8,10],[9,10]]), 6)
+
+
+
+
+
+#print curvatures([[1, 0, 0, 0, 0, 0], [1, 2], [1, 4], [2, 3], [3, 4], [3], [4], [5, 8], [5, 9], [6, 7], [6, 9], [7, 10], [8, 10], [9, 10]])
+
+
 
 a = [[1, 1, 0, 0, 1, 1], [1, 2], [3, 4]]
 b = [[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]]
 
-menu()
+
+#menu()
 #print diam_less_than_2([[0, 0, 0, 0, 0, 0], [1, 2, 3, 4],[1, 2, 3, 4],[1], [2], [3,4]])
 #generate()
 
