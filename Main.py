@@ -25,7 +25,7 @@ def menu():
             curve_sharp = curv_sharp(curv, outdegree)
             print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
         elif input == "2":
-            all_graphs = generate()
+            all_graphs = generate_incomplete_2balls()
             write_to_file(all_graphs)
         elif input == "3":
             g_in2 = raw_input("Input a graph: ")
@@ -152,7 +152,7 @@ def iso(g1, g2):
                 b.sort()
                 if anew == b:
                     return True
-        return False
+    return False
 
 
 class Node:
@@ -259,11 +259,11 @@ def fill_twoballs(b, part, two_sphere, h, vertices):
             fill_twoballs(b_new, part_new, new_two_sphere, h, vertices)
     return
 
-def generate():
+def generate_incomplete_2balls():
     oneballs = get_oneballs()
     vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
-                          [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
-                          [[1, 2, 3, 4]]]
+                [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
+                [[1, 2, 3, 4]]]
     all_two_balls = []
     for oneball in oneballs[:-1]:
         b = outdeg([oneball])
@@ -504,9 +504,75 @@ def curvatures(completed_g):
     curvatures.sort(reverse=True)
     return curvatures
 
+
+
 def iso_complete(g1, g2):
-    if curvatures(g1) != curvatures(g2):
+    g1_new = copy.deepcopy(g1)
+    g2_new = copy.deepcopy(g2)
+    if curvatures(g1_new) != curvatures(g2_new):
         return False
+    else:
+        adj1 = comp_adjmat(g1_new)
+        adj2 = comp_adjmat(g2_new)
+        for v in range(len(adj2)):
+            if curvature.curv_calc(adj1, 0) - curvature.curv_calc(adj2, v) < 10e-3:
+                if np.array_equal(recentretest(adj1, 0),recentretest(adj2, v)):
+                    return True
+    return False
+
+
+def iso_combined(g1, g2):
+    g1_new = copy.deepcopy(g1)
+    g2_new = copy.deepcopy(g2)
+    completeg1 = False
+    completeg2 = False
+    for i in g1:
+        if max(i) > 4:
+            completeg1 = True
+    if completeg1 == True:
+        if curvatures(g1_new) != curvatures(g2_new):
+            return False
+        else:
+            adj1 = comp_adjmat(g1_new)
+            adj2 = comp_adjmat(g2_new)
+            for v1 in range(len(adj1)):
+                for v2 in range(len(adj2)):
+                    if curvature.curv_calc(adj1, v1) == curvature.curv_calc(adj2, v2):
+                        if np.array_equal(recentretest(adj1, v1), recentretest(adj2, v2)):
+                            return True
+    else:
+        g1_std = standardise(g1)
+        g2_std = standardise(g2)
+        a = g1_std[1:]
+        b = g2_std[1:]
+        len_a = len(a)
+        if len_a != len(b):
+            return False
+        else:
+            p = list(permutations([0, 1, 2, 3]))
+            m1 = one_ball(g1_std[0])
+            m2 = one_ball(g2_std[0])
+            for perm in p:
+                anew = copy.deepcopy(a)
+                m1_new = m1[perm, :]
+                m1_new = m1_new[:, perm]
+                if np.array_equal(m1_new, m2):
+                    for j in range(len_a):
+                        for k in range(len(a[j])):
+                            anew[j][k] = perm[a[j][k] - 1] + 1
+                    for i in range(len_a):
+                        anew[i].sort()
+                        b[i].sort()
+                    anew.sort()
+                    b.sort()
+                    if anew == b:
+                        return True
+    return False
+
+
+
+
+
 
 def complete_twoball(standardised_g):
     sorted_complete_graphs = []
@@ -544,6 +610,7 @@ def complete_twoball(standardised_g):
 def fillbrackets(d, vertices, complete_graphs, g):
     if vertices == []:
         complete_graphs.append(g)
+        return
     subsets = list(itertools.combinations(vertices[1:], d[0]))
     vertex_saturation = []
     for comb in subsets:
@@ -618,12 +685,12 @@ def recentre(adjmatrix, x):
                 newmatrix[i, :] = newmatrix[x, :]
                 newmatrix[x, :] = copy
                 j += 1
-        oneball = [x]
+        #oneball = [x]
         twoball = []
         contained = True
-        for a in range(len(newmatrix)):
-            if newmatrix[x][a]==1:
-                oneball.append(a)
+        # for a in range(len(newmatrix)):
+        #     if adjmatrix[x][a]==1:
+        #         oneball.append(a)
         for b in range(len(newmatrix)):
             for c in oneball[1:]:
                 if newmatrix[b][c] == 1:
@@ -634,10 +701,12 @@ def recentre(adjmatrix, x):
         for vertex in range(len(newmatrix)):
             if vertex not in twoball_vertices:
                 contained = False
-    #   print 'graph contained in 2-ball:', contained
-    #print newmatrix
-
-    edges = [[oneball[1], oneball[2]], [oneball[1], oneball[3]], [oneball[1], oneball[4]], [oneball[2], oneball[3]], [oneball[2], oneball[4]], [oneball[3], oneball[4]]]
+    print 'graph contained in 2-ball:', contained
+    print newmatrix
+    edges = [[oneball[1], oneball[2]], [oneball[1],
+            oneball[3]], [oneball[1], oneball[4]],
+            [oneball[2], oneball[3]], [oneball[2],
+            oneball[4]], [oneball[3], oneball[4]]]
     oneball_list = [0, 0, 0, 0, 0, 0]
     for j in oneball[1:]:
         for k in oneball[2:]:
@@ -654,7 +723,7 @@ def recentre(adjmatrix, x):
                     if oneball[i] == vertex1:
                         vertexlist.append(i)
         graph.append(vertexlist)
-    graph.sort
+    graph = sorted(graph)
     graph.sort(key=len, reverse=True)
     for vertex_a in twoball:
         for vertex_b in twoball[1:]:
@@ -668,18 +737,81 @@ def recentre(adjmatrix, x):
                 new_edge = sorted([a, b])
                 if new_edge not in graph:
                     graph.append(new_edge)
-
     return graph
 
 
+def recentretest(adjmatrix, x):
+    if x == 0:
+        return adjmatrix
+    else:
+        oneball = [x] + curvature.one_sphere(adjmatrix, x)
+        twosphere = curvature.two_sphere(adjmatrix, x)
+        contained = True
+        twosphere.sort
+        twoball_vertices = oneball + twosphere
+        for vertex in range(len(adjmatrix)):
+            if vertex not in twoball_vertices:
+                contained = False
+    # print 'graph contained in 2-ball:', contained
+    edges = [[oneball[1], oneball[2]], [oneball[1], oneball[3]],
+             [oneball[1], oneball[4]], [oneball[2], oneball[3]],
+             [oneball[2], oneball[4]], [oneball[3], oneball[4]]]
+    oneball_list = [0, 0, 0, 0, 0, 0]
+    for j in oneball[1:]:
+        for k in oneball[2:]:
+            if adjmatrix[j][k]== 1:
+                for l in range(len(edges)):
+                    if edges[l] == [j, k]:
+                        oneball_list[l] = 1
+    graph = [oneball_list]
+    for vertex2 in twosphere:
+        vertexlist = []
+        for vertex1 in oneball:
+            if adjmatrix[vertex1][vertex2] == 1:
+                for i in range(len(oneball[1:])+1):
+                    if oneball[i] == vertex1:
+                        vertexlist.append(i)
+        graph.append(vertexlist)
+    graph = sorted(graph)
+    graph.sort(key=len, reverse=True)
+    for vertex_a in twosphere:
+        for vertex_b in twosphere[1:]:
+            if adjmatrix[vertex_a][vertex_b] == 1:
+                for j in range(len(twosphere)):
+                    if twosphere[j] == vertex_a:
+                        a = j+5
+                for k in range(len(twosphere)):
+                    if twosphere[k] == vertex_b:
+                        b = k+5
+                new_edge = sorted([a, b])
+                if new_edge not in graph:
+                    graph.append(new_edge)
+    return graph
+
+# counter = 0
+# incomplete_2balls = generate_incomplete_2balls()
+# balllist = []
+# for oneball in incomplete_2balls:
+#     #print oneball[0]
+#     for twoball in oneball:
+#         if curvature.curv_calc(adjmat(twoball), 0) > 0:
+#             #print twoball
+#             twoball_list = complete_twoball(twoball)
+#             print len(twoball_list)
+#             for completed_twoball1 in twoball_list:
+#                 # for completed_twoball2 in twoball_list:
+#                 #     if iso_combined(completed_twoball1, completed_twoball2) == True:
+#                 #         twoball_list.remove(completed_twoball2)
+#                     if curvatures(completed_twoball1)[-1] >0:
+#                         counter += 1
+# print counter
 
 
+# print complete_twoball([[0, 0, 0, 0, 0, 0], [1, 2, 3, 4], [1],[1],[2],[2],[3],[3],[4],[4]])
+# print len(complete_twoball([[0, 0, 0, 0, 0, 0], [1, 2, 3, 4], [1],[1],[2],[2],[3],[3],[4],[4]]))
 
 
-
-print recentre(comp_adjmat([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4], [3], [4], [5, 6], [5, 8],[6,9],[7,9],[7,10],[8,10],[9,10]]), 6)
-
-
+#print recentretest(comp_adjmat([[1, 0, 0, 1, 0, 0],[1,3,4],[1,3],[2],[4],[4], [5,8],[6,7],[6,9],[7,8],[7,9],[8,9]]), 3)
 
 
 
@@ -696,3 +828,13 @@ b = [[1, 1, 0, 0, 1, 1], [1, 4], [2, 3]]
 #generate()
 
 #print remove_spherical(complete_twoball(standardise([[1, 0, 0, 0, 0, 0], [1, 2], [2, 3], [3, 4], [1, 4]]))[0])
+
+#print complete_twoball([[1, 0, 0, 1, 0, 0],[1,3,4],[1,3],[2],[4],[4]])
+
+#print iso_complete([[1, 0, 0, 1, 0, 0], [1, 3, 4],[1, 3],[2],[4],[4],[5,7],[6,8],[6,9],[7,8],[7,9],[8,9]], [[1, 0, 0, 1, 0, 0],[1, 3,4],[1,3],[2],[4],[4],[5, 8],[6,7],[6,9],[7,8],[7,9], [8,9]])
+
+list1 = [[2,3,4,[[2,4],1]],[1,3,[2,3],[2,4]],[2,4,[2,3,4]],[2,3,[1,3]],[2,4,[1,3]],[1]]
+list2 = [[5,7],[6,8],[6,9]]
+
+list1.sort()
+print list1

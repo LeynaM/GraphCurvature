@@ -15,7 +15,7 @@
   </component>
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1534095861115" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GraphCurvature$Main.coverage" NAME="Main Coverage Results" MODIFIED="1534763267470" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$thebestytestywesty.coverage" NAME="thebestytestywesty Coverage Results" MODIFIED="1531135915744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GraphCurvature$testywesty.coverage" NAME="testywesty Coverage Results" MODIFIED="1530895487250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -24,8 +24,8 @@
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6588">
-              <caret line="504" column="21" lean-forward="true" selection-start-line="504" selection-start-column="21" selection-end-line="504" selection-end-column="21" />
+            <state relative-caret-position="10207">
+              <caret line="839" column="11" selection-start-line="839" selection-start-column="11" selection-end-line="839" selection-end-column="11" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -33,28 +33,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="copy.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/copy.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2220">
-              <caret line="150" selection-start-line="150" selection-end-line="150" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="numeric.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/numeric.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="35565">
-              <caret line="2391" selection-start-line="2391" selection-end-line="2391" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="CurvatureCalculator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CurvatureCalculator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3600">
+            <state relative-caret-position="108">
               <caret line="242" selection-start-line="242" selection-end-line="242" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
@@ -104,7 +86,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="1280" />
+    <option name="x" value="642" />
+    <option name="width" value="638" />
     <option name="height" value="800" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -518,7 +501,21 @@
       <option name="project" value="LOCAL" />
       <updated>1533758798489</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="complete_graph working without isomorphism checking, added to menu">
+      <created>1534095994995</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1534095994995</updated>
+    </task>
+    <task id="LOCAL-00042" summary="re-centre started">
+      <created>1534267449385</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1534267449385</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TodoView">
@@ -532,22 +529,24 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5033557" side_tool="true" weight="0.3148148" />
-      <window_info anchor="right" x="0" y="0" width="270" height="600" id="Documentation" order="6" side_tool="true" visible="true" weight="0.18093699" />
+      <window_info anchor="right" x="0" y="0" width="270" height="600" id="Documentation" order="6" sideWeight="0.5019841" side_tool="true" weight="0.32956383" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4966443" visible="true" weight="0.2820513" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.43874645" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32763532" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4966443" visible="true" weight="0.28490028" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3263158" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.41195476" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="right" id="SciView" order="5" weight="0.5352349" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
+      <window_info anchor="right" id="SciView" order="5" sideWeight="0.49801588" weight="0.32956383" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.44871795" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.37179488" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Coverage" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -555,7 +554,6 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="8" weight="0.32763532" />
     </layout>
   </component>
@@ -593,8 +591,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="partitions" />
-    <MESSAGE value="finished making partitions" />
     <MESSAGE value="started generate" />
     <MESSAGE value="finished generate" />
     <MESSAGE value="sped up generate- partition reversed" />
@@ -618,10 +614,34 @@
     <MESSAGE value="network is class now and nodes sorted by number of degrees(neighbours)" />
     <MESSAGE value="new functions for completed graphs" />
     <MESSAGE value="started complete_graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="started complete_graph" />
+    <MESSAGE value="complete_graph working without isomorphism checking, added to menu" />
+    <MESSAGE value="re-centre started" />
+    <option name="LAST_COMMIT_MESSAGE" value="re-centre started" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>516</line>
+          <option name="timeStamp" value="334" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>766</line>
+          <option name="timeStamp" value="335" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>759</line>
+          <option name="timeStamp" value="336" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Main.py</url>
+          <line>751</line>
+          <option name="timeStamp" value="337" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -629,7 +649,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="284" />
+      <option name="time" value="338" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -714,6 +734,13 @@ return curvsharp</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/linalg/linalg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14895">
+          <caret line="993" selection-start-line="993" selection-end-line="993" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7845">
@@ -1042,9 +1069,23 @@ return curvsharp</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/linalg/linalg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14895">
+          <caret line="993" selection-start-line="993" selection-end-line="993" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda2/envs/Python2/lib/python2.7/site-packages/numpy/core/arrayprint.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21795">
+          <caret line="1453" selection-start-line="1453" selection-end-line="1453" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CurvatureCalculator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3600">
+        <state relative-caret-position="108">
           <caret line="242" selection-start-line="242" selection-end-line="242" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
@@ -1054,8 +1095,8 @@ return curvsharp</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6588">
-          <caret line="504" column="21" lean-forward="true" selection-start-line="504" selection-start-column="21" selection-end-line="504" selection-end-column="21" />
+        <state relative-caret-position="10207">
+          <caret line="839" column="11" selection-start-line="839" selection-start-column="11" selection-end-line="839" selection-end-column="11" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
