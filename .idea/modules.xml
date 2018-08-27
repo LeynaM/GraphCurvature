@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/GraphCurvature.iml" filepath="$PROJECT_DIR$/.idea/GraphCurvature.iml" />
+      <module fileurl="file:///Volumes/F_GURR/GraphCurvature/.idea/GraphCurvature.iml" filepath="/Volumes/F_GURR/GraphCurvature/.idea/GraphCurvature.iml" />
     </modules>
   </component>
 </project>
