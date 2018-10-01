@@ -4,13 +4,11 @@ import numpy as np
 from operator import itemgetter
 from itertools import permutations
 import CurvatureCalculator as curvature
-import itertools
-import time
 import math
+from itertools import izip
 from itertools import repeat
 from itertools import chain
-from itertools import izip
-from itertools import ifilter
+from itertools import combinations
 
 
 def menu():
@@ -29,7 +27,7 @@ def menu():
             curve_sharp = curv_sharp(curv, outdegree)
             print "\nCurvature: %11.3f\nS1 out-reg: %10s\nCurvature-sharp: %s" % (curv, s1out, curve_sharp)
         elif input == "2":
-            all_graphs = generate_incomplete_2balls()
+            all_graphs = generate_incomp_twoballs()
             write_to_file(all_graphs)
         elif input == "3":
             g_in2 = raw_input("Input a graph: ")
@@ -128,8 +126,7 @@ def standardise(g):
             g_new[1].append([i + 1])
 
     # SORT TWO SPHERE SPHERICAL EDGES #
-    g_new[2].sort(key=lambda x: x[1])
-    g_new[2].sort(key=lambda x: x[0])
+    g_new[2].sort(key=lambda x: x[:])
     return g_new
 
 
@@ -156,8 +153,7 @@ def standardise_oneball(g):
             for j in range(2):
                 oneball_perm_struct[i][0][j] = perm[oneball_struct[i][0][j] - 1]
             oneball_perm_struct[i][0].sort()
-        oneball_perm_struct.sort(key=lambda x: x[0][1])
-        oneball_perm_struct.sort(key=lambda x: x[0][0])
+        oneball_perm_struct.sort(key=lambda x: x[0][:])
         oneball_perm = []
         for i in range(6):
             oneball_perm.append(oneball_perm_struct[i][1])
@@ -522,47 +518,51 @@ def iso(g1, g2, fix_center=False):
 
 
 # GRAPH GENERATING FUNCTIONS #
-def partition(n):
-    """ Returns a list of partitions of an integer.
+def partition(n, num_unsat_vert, avail_outdeg_max):
+    """ Returns a list of partitions of an integer that satisfies the conditions.
 
     :param n: integer to be partitioned
-    :return: List of partitions of integer n
+    :param num_unsat_vert: number of unsaturated vertices in the one sphere
+    :param avail_outdeg_max: maximum available out degree
+    :return: list of partitions of integer n
     """
     m = [[n]]
     for x in range(1, n):
-        for y in partition(n - x):
+        for y in partition(n - x, num_unsat_vert, avail_outdeg_max):
             s = sorted([x] + y, reverse=True)
             if s not in m:
                 m.append(s)
     return m
 
 
-def fill_twoballs(avail_outdeg, part, two_sphere, all_two_spheres, vertices):
-    """ Recursively generates all two spheres for a specific one ball.
+def generate_twoball(avail_outdeg, part, twoball, all_twoballs, vertices):
+    """ Recursively generates all two balls for a specific one ball.
 
     :param avail_outdeg: available outdegrees
     :param part: current partition
-    :param two_sphere: current two sphere
-    :param all_two_spheres: list of all the two spheres for the specific one ball
+    :param twoball: current two ball
+    :param all_twoballs: list of all the two balls for the specific one ball
     :param vertices: list of available vertices with multiplicity
     :return: None
     """
     # Tail of recursion is reached when part is empty, therefore current two sphere is complete
     if not part:
-        if two_sphere not in all_two_spheres:
-            all_two_spheres.append(two_sphere)
+        if twoball not in all_twoballs:
+            twoball.append([])
+            all_twoballs.append(twoball)
         return
-    # Adding leaves
+    # Tail of recursion is also reached when there are only leaves left
     if part[0] == 1:
-        two_sphere_new = copy.deepcopy(two_sphere)
+        twoball_new = copy.deepcopy(twoball)
         for i in range(4):
             for j in range(avail_outdeg[i]):
-                if len(two_sphere_new) == 1:
-                    two_sphere_new.append([[i + 1]])
+                if len(twoball_new) == 1:
+                    twoball_new.append([[i + 1]])
                 else:
-                    two_sphere_new[1].append([i + 1])
-        if two_sphere_new not in all_two_spheres:
-            all_two_spheres.append(two_sphere_new)
+                    twoball_new[1].append([i + 1])
+        if twoball_new not in all_twoballs:
+            twoball_new.append([])
+            all_twoballs.append(twoball_new)
         return
     # Generating a radial edge
     p = part[0]
@@ -574,150 +574,166 @@ def fill_twoballs(avail_outdeg, part, two_sphere, all_two_spheres, vertices):
             if avail_outdeg[i - 1] == 0:
                 valid = False
             avail_outdeg_new[i - 1] -= 1
-        # If radial edge is valid, add it to the current two sphere and repeat to generate the next edge
+        # If radial edge is valid, add it to the current two ball and repeat to generate the next edge
         if valid:
-            two_sphere_new = copy.deepcopy(two_sphere)
-            if len(two_sphere_new) == 1:
-                two_sphere_new.append([a])
+            twoball_new = copy.deepcopy(twoball)
+            if len(twoball_new) == 1:
+                twoball_new.append([a])
             else:
-                two_sphere_new[1] = two_sphere_new[1] + [a]
-            fill_twoballs(avail_outdeg_new, part_new, two_sphere_new, all_two_spheres, vertices)
+                twoball_new[1] = twoball_new[1] + [a]
+            generate_twoball(avail_outdeg_new, part_new, twoball_new, all_twoballs, vertices)
     return
 
 
-def generate_incomplete_2balls():
-    '''
-    calls fill_twoballs to recursively generate all incomplete twoballs
-    :return: a list of all the incomplete unique twoballs in lists separating them by oneball
-    '''
+def generate_incomp_twoballs():
+    """ Generates all incomplete two balls grouped by one ball
+
+    :return: list of lists of two balls
+    """
     oneballs = get_oneballs()
     vertices = [[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]],
                 [[1, 2, 3], [1, 2, 4], [1, 3, 4], [2, 3, 4]],
                 [[1, 2, 3, 4]]]
-    all_two_balls = []
+    twoballs_incomp = []
     for oneball in oneballs[:-1]:
-        b = outdeg([oneball])
-        n = sum(b)
-        l = 0
+        avail_outdeg = outdeg([oneball, [], []])
+        # Calculate number of unsaturated vertices
+        num_unsat_vert = 0
         for i in range(4):
-            if b[i] != 0:
-                l += 1
-        parts = partition(n)
-        partsnew = []
-        for a in parts:
-            length_a = len(a)
-            max_a = max(a)
-            if max_a <= l and max(b) <= length_a:
-                partsnew.append(a)
-        one_ball_graphs = []
-        for part in partsnew:
+            if avail_outdeg[i] != 0:
+                num_unsat_vert += 1
+        # Get list of valid partitions
+        n = sum(avail_outdeg)
+        parts = partition(n, num_unsat_vert, max(avail_outdeg))
+        # Create list of valid partitions
+        parts_new = []
+        avail_outdeg_max = max(avail_outdeg)
+        for part in parts:
+            part_len = len(part)
+            part_max = max(part)
+            if part_max <= num_unsat_vert and avail_outdeg_max <= part_len:
+                parts_new.append(part)
+        twoballs_incomp_oneball = []  # All incomplete two balls for a specific one ball
+        # Generate two ball for each partition
+        for part in parts_new:
             twoball = [oneball]
-            h = []
-            fill_twoballs(b, part, twoball, h, vertices)
-            unique_h = [h[0]]
-            for i in h[1:]:
-                for j in unique_h:
-                    k = copy.deepcopy(i)
-                    l = copy.deepcopy(j)
-                    isomorphic = iso(k, l)
-                    if isomorphic:
-                        break
-                else:
-                    unique_h.append(i)
-            # unique_h.sort(key=itemgetter(0))
-            # unique_h.sort(key=lambda x: len(x[0]))
-
-            one_ball_graphs += unique_h
-        all_two_balls.append(one_ball_graphs)
-    all_two_balls.append([[[1, 1, 1, 1, 1, 1]]])
-    return all_two_balls
+            all_twoballs = []
+            generate_twoball(avail_outdeg, part, twoball, all_twoballs, vertices)
+            unique_twoballs = [all_twoballs[0]]
+            # Remove isomorphisms
+            for graph1 in all_twoballs[1:]:
+                for graph2 in unique_twoballs:
+                    if not iso(graph1, graph2):
+                        unique_twoballs.append(graph1)
+            twoballs_incomp_oneball += unique_twoballs
+        twoballs_incomp.append(twoballs_incomp_oneball)
+    twoballs_incomp.append([[[1, 1, 1, 1, 1, 1], [], []]])
+    return twoballs_incomp
 
 
-def complete_twoball(standardised_g):
-    '''
-    completes a twoball by adding spherical edges
-    :param standardised_g: incomplete twoball
-    :return: list of completions
-    '''
-    if len(standardised_g) == 1:
-        return [standardised_g]
+def complete_twoball(g):
+    """ Generates completions of a two ball by adding spherical edges.
+
+    :param g: incomplete two ball
+    :return: list of completed graphs
+    """
+    # If there is no two sphere, return g
+    if not g[1]:
+        return g
     else:
-        sorted_complete_graphs = []
+        g_new = copy.deepcopy(g)
+        twoball_vertices = len(g_new[1])
+        degrees = []
+        unsat_vertices = []  # Unsaturated vertices in the two sphere
+        # Create list of degrees and unsaturated vertices
+        for j in range(twoball_vertices):
+            deg = 4 - len(g_new[1][j])
+            degrees.append(deg)
+            if deg != 0:
+                unsat_vertices.append(5 + j)
+        degrees.sort(reverse=True)
+        unsat_vertices.sort(reverse=True)
+        # Generate spherical edges
         complete_graphs = []
-        gst = copy.deepcopy(standardised_g)
-        twoballvertices = len(gst[1])
-        d = []
-        vertices = []
-        for j in range(twoballvertices):
-            d.append(4 - len(gst[1][j]))
-        for k in range(len(d)):
-            if d[k] != 0:
-                vertices.append(5 + k)
-        d.sort(reverse=True)
-        vertices.sort(reverse=True)
-        fillbrackets(d, vertices, complete_graphs, gst + [[]])
+        generate_sph_edges(degrees, unsat_vertices, complete_graphs, g_new)
+        # Sort graphs
+        sorted_graphs = []
         for graph in complete_graphs:
-            a = graph[:2]
-            b = graph[2]
-            b.sort(key=itemgetter(1))
-            b.sort(key=itemgetter(0))
-            a.append(b)
-            sorted_complete_graphs.append(a)
-        # complete_graphs = [sorted_complete_graphs[0]]
-        # for graph1 in sorted_complete_graphs[1:]:
-        #     for graph2 in complete_graphs:
-        #         if not iso_complete(graph1, graph2):
-        #             complete_graphs.append(graph1)
-        return sorted_complete_graphs
+            graph[2].sort(key=lambda x: x[:])
+            sorted_graphs.append(graph)
+        # Remove isomorphisms
+        unique_twoballs = [sorted_graphs[0]]
+        for graph1 in sorted_graphs[1:]:
+            for graph2 in unique_twoballs:
+                if not iso(graph1, graph2):
+                    unique_twoballs.append(graph1)
+        return unique_twoballs
 
 
-def fillbrackets(d, vertices, complete_graphs, g):
-    '''
-    the recursive function called by complete_twoball to fill each bracket
-    '''
-    if vertices == []:
+def generate_sph_edges(degrees, unsat_vertices, complete_graphs, g):
+    """ Recursively generates the spherical edges one vertex at a time.
+
+    :param degrees: list of the degrees of two sphere vertices
+    :param unsat_vertices: unsaturated vertices in the two sphere
+    :param complete_graphs: list of completions of the graph
+    :param g: incomplete two ball
+    :return: None
+    """
+    # Tail of recursion is reached when all vertices are saturated
+    if not unsat_vertices:
         complete_graphs.append(g)
         return
-    subsets = list(itertools.combinations(vertices[1:], d[0]))
+    # Find possible vertex saturations for first unsaturated vertex
+    subsets = list(combinations(unsat_vertices[1:], degrees[0]))
     vertex_saturation = []
     for comb in subsets:
         vertex_saturation.append(list(comb))
+    # Adding spherical edges and repeat with updated values
     if vertex_saturation != [[]]:
         for choice in vertex_saturation:
-            d_new = copy.deepcopy(d[1:])
-            vertices_new = copy.deepcopy(vertices[1:])
+            deg_new = degrees[1:]
+            vert_new = unsat_vertices[1:]
             g_new = copy.deepcopy(g)
             for i in choice:
-                g_new[2].append([i, vertices[0]])
-                d_new[-(i - 4)] -= 1
-                if d_new[-(i - 4)] == 0:
-                    vertices_new.remove(i)
-            fillbrackets(d_new, vertices_new, complete_graphs, g_new)
+                g_new[2].append([i, unsat_vertices[0]])
+                deg_new[-(i - 4)] -= 1
+                if deg_new[-(i - 4)] == 0:
+                    vert_new.remove(i)
+            generate_sph_edges(deg_new, vert_new, complete_graphs, g_new)
     return
 
 
-def generate_all():
-    '''
+def generate_non_neg_twoballs():
+    """ Generates all non-negatively curved four regular two balls and a list of their curvatures.
 
-    :return: all completed graphs in final classification - doesn't work yet!
-    '''
-    incomplete_2balls = generate_incomplete_2balls()
-    for oneball in incomplete_2balls:
-        for graph in oneball:
-            if curvature.curv_calc(adjmat(graph), 0) < 0:
-                incomplete_2balls.remove(graph)
-    complete_twoballs = []
-    for graph in incomplete_2balls:
-        completed_graph = complete_twoballs(graph)
-        graph_curvatures = curvatures(completed_graph)
-        if min(graph_curvatures) >= 0:
-            complete_twoballs.append(
-                [completed_graph, graph_curvatures])  # list of lists containing graph and its curvatures
-    unique_graphs = [complete_twoballs[0]]
-    for graph1 in complete_twoballs[1:]:
+    :return: list of non-negative two balls and corresponding curvatures
+    """
+    # Generate incomplete two balls
+    twoballs_incomp = generate_incomp_twoballs()
+    # Create list of non-negatively curved two balls
+    twoballs_non_neg = []
+    for oneball in twoballs_incomp:
+        for twoball in oneball:
+            if curvature.curv_calc(adjmat(twoball), 0) >= 0:
+                twoballs_non_neg.append(twoball)
+    # Generate completions for each non-negative two ball
+    twoballs_comp_non_neg = []
+    for twoball in twoballs_non_neg:
+        twoballs_comp = complete_twoball(twoball)
+        # Remove graphs of negative curvature
+        for graph in twoballs_comp:
+            curv = curvatures(graph)
+            only_curvatures = list(izip(*curv))[1]
+            if min(only_curvatures) >= 0:
+                twoballs_comp_non_neg.append([graph, curv])  # list of lists containing graph and its curvatures
+    # Remove isomorphisms
+    unique_graphs = [twoballs_comp_non_neg[0]]
+    for graph1 in twoballs_comp_non_neg[1:]:
         for graph2 in unique_graphs:
-            if not iso_centre_with_curvature(graph1[0], graph2[0], graph2[1], graph2[1]):
+            if not iso(graph1[0], graph2[0]):
                 unique_graphs.append(graph1)
+            else:
+                print "an iso exists!"
     return unique_graphs
 
 
@@ -907,26 +923,25 @@ def write_to_file(all_graphs):
             '\\end{document}')
     f.close()
 
-
-# graph1 = [[1, 0, 0, 0, 0, 1], [[2, 4], [1, 4], [2, 3], [1, 3]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
-# graph2 = [[1, 0, 1, 1, 0, 1], [[3, 4], [1, 2]], []]
-# print standardise(graph1)
-# print standardise(graph2)
-
+# graph1 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
+# graph2 = [[0, 1, 0, 0, 1, 0], [[1, 2], [1, 4], [2, 3], [3, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
+# graph2 = standardise_oneball(graph2)
+# print iso(graph1, graph2)
+#
+# graph1 = [[1, 0, 1, 1, 0, 1], [[1, 2], [3, 4]], []]
+# graph1 = standardise_oneball(graph1)
+# graph2 = [[0, 1, 1, 1, 1, 0], [[1, 3], [2, 4]], []]
+# graph2 = standardise_oneball(graph2)
+# print iso(graph1, graph2)
+#
+# graph1 = [[1, 1, 0, 0, 1, 1], [[1, 4], [2, 3]], []]
+# graph1 = standardise_oneball(graph1)
+# graph2 = [[1, 1, 0, 0, 1, 1], [[1, 2], [3, 4]], []]
+# graph2 = standardise_oneball(graph2)
+# print iso(graph1, graph2)
 
 graph1 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
-graph2 = [[0, 1, 0, 0, 1, 0], [[1, 2], [1, 4], [2, 3], [3, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
-graph2 = standardise_oneball(graph2)
-print iso(graph1, graph2)
-
-graph1 = [[1, 0, 1, 1, 0, 1], [[1, 2], [3, 4]], []]
-graph1 = standardise_oneball(graph1)
-graph2 = [[0, 1, 1, 1, 1, 0], [[1, 3], [2, 4]], []]
-graph2 = standardise_oneball(graph2)
-print iso(graph1, graph2)
-
-graph1 = [[1, 1, 0, 0, 1, 1], [[1, 4], [2, 3]], []]
-graph1 = standardise_oneball(graph1)
-graph2 = [[1, 1, 0, 0, 1, 1], [[1, 2], [3, 4]], []]
-graph2 = standardise_oneball(graph2)
-print iso(graph1, graph2)
+print graph1
+graph2 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], []]
+twoballs = generate_incomp_twoballs()
+print twoballs
