@@ -138,6 +138,9 @@ def standardise_oneball(g):
     """
     oneball_orig = g[0]
     oneball_std = get_oneballs(oneball_orig)
+    # If orignial one ball is already a standard one ball, return graph
+    if oneball_orig == oneball_std:
+        return g
 
     # RELABEL VERTICES #
     # Create data structure, oneball_struct, containing original one ball and its connections
@@ -363,18 +366,22 @@ def iso(g1, g2, fix_center=False):
     :param fix_center: True if the centers are fixed (default False)
     :return: True if the graphs are isomorphic
     """
-    # Standardise the one balls
-    g1 = standardise_oneball(g1)
-    g2 = standardise_oneball(g2)
+    # If graphs are identical, return True
+    if g1 == g2:
+        return True
+    # If there is no two ball, return True
+    if g1[0] == [1, 1, 1, 1, 1, 1]:
+        return True
     # If number of vertices differ, return False
     num_vertices = 5 + len(g1[1])
     if num_vertices != 5 + len(g2[1]):
         return False
-    # If there is no two ball, return True
-    if g1[0] == [1, 1, 1, 1, 1, 1]:
-        return True
+
     # Calculate curvatures
     curv1 = curvatures(g1)
+    only_curvatures1 = list(izip(*curv1))[1]
+    oneball_curv1 = sorted(only_curvatures1[1:5])
+    twoball_curv1 = sorted(only_curvatures1[5:])
     curv2 = curvatures(g2)
 
     g2_center = num_vertices
@@ -387,119 +394,117 @@ def iso(g1, g2, fix_center=False):
         if g1[0] == g2[0]:
             # If number of spherical edges are the same, continue
             if len(g1[2]) == len(g2[2]):
-                # # If curvatures of centers are the same, continue
-                # if curv1[0][1] == curv2[0][1]:
-                #     # If one ball curvatures are the same, continue
-                #     only_curvatures1 = list(izip(*curv1))[1]
-                #     only_curvatures2 = list(izip(*curv2))[1]
-                #     if sorted(only_curvatures1[1:5]) == sorted(only_curvatures2[1:5]):
-                #         # If two ball curvatures are the same, continue
-                #         if sorted(only_curvatures1[5:]) == sorted(only_curvatures2[5:]):
+                # If curvatures of centers are the same, continue
+                if curv1[0][1] == curv2[0][1]:
+                    # If one ball curvatures are the same, continue
+                    only_curvatures2 = list(izip(*curv2))[1]
+                    if oneball_curv1 == sorted(only_curvatures2[1:5]):
+                        # If two ball curvatures are the same, continue
+                        if twoball_curv1 == sorted(only_curvatures2[5:]):
 
-                # CREATE NETWORK #
-                num_radial = len(g1[1])  # Number of two ball vertices
-                # Create dictionary for each network graph
-                network1 = {}
-                network2 = {}
-                for i in range(num_vertices):
-                    network1[i] = []
-                    network2[i] = []
-                # Connect one sphere to centre
-                for i in range(1, 5):
-                    network1[0].append(i)
-                    network1[i].append(0)
-                    network2[0].append(i)
-                    network2[i].append(0)
-                # Establish one ball connections
-                j = (1, 1, 1, 2, 2, 3)
-                k = (2, 3, 4, 3, 4, 4)
-                for i in range(6):
-                    if g1[0][i] == 1:
-                        network1[j[i]].append(k[i])
-                        network1[k[i]].append(j[i])
-                    if g2[0][i] == 1:
-                        network2[j[i]].append(k[i])
-                        network2[k[i]].append(j[i])
-                # Establish radial connections
-                radial1 = g1[1]
-                radial2 = g2[1]
-                for i in range(num_radial):
-                    for j in range(len(radial1[i])):
-                        network1[i + 5].append(radial1[i][j])
-                        network1[radial1[i][j]].append(i + 5)
-                    for j in range(len(radial2[i])):
-                        network2[i + 5].append(radial2[i][j])
-                        network2[radial2[i][j]].append(i + 5)
-                # Establish spherical connections
-                if g1[2] != []:
-                    for i in range(len(g1[2])):
-                        network1[g1[2][i][0]].append(g1[2][i][1])
-                        network1[g1[2][i][1]].append(g1[2][i][0])
-                        network2[g2[2][i][0]].append(g2[2][i][1])
-                        network2[g2[2][i][1]].append(g2[2][i][0])
+                            # CREATE NETWORK #
+                            num_radial = len(g1[1])  # Number of two ball vertices
+                            # Create dictionary for each network graph
+                            network1 = {}
+                            network2 = {}
+                            for i in range(num_vertices):
+                                network1[i] = []
+                                network2[i] = []
+                            # Connect one sphere to centre
+                            for i in range(1, 5):
+                                network1[0].append(i)
+                                network1[i].append(0)
+                                network2[0].append(i)
+                                network2[i].append(0)
+                            # Establish one ball connections
+                            j = (1, 1, 1, 2, 2, 3)
+                            k = (2, 3, 4, 3, 4, 4)
+                            for i in range(6):
+                                if g1[0][i] == 1:
+                                    network1[j[i]].append(k[i])
+                                    network1[k[i]].append(j[i])
+                                if g2[0][i] == 1:
+                                    network2[j[i]].append(k[i])
+                                    network2[k[i]].append(j[i])
+                            # Establish radial connections
+                            radial1 = g1[1]
+                            radial2 = g2[1]
+                            for i in range(num_radial):
+                                for j in range(len(radial1[i])):
+                                    network1[i + 5].append(radial1[i][j])
+                                    network1[radial1[i][j]].append(i + 5)
+                                for j in range(len(radial2[i])):
+                                    network2[i + 5].append(radial2[i][j])
+                                    network2[radial2[i][j]].append(i + 5)
+                            # Establish spherical connections
+                            if g1[2]:
+                                for i in range(len(g1[2])):
+                                    network1[g1[2][i][0]].append(g1[2][i][1])
+                                    network1[g1[2][i][1]].append(g1[2][i][0])
+                                    network2[g2[2][i][0]].append(g2[2][i][1])
+                                    network2[g2[2][i][1]].append(g2[2][i][0])
 
-                # GENERATE PERMUTATIONS #
-                # Add one ball permutations
-                vertex_perms = [get_oneball_perms(g2[0])]
-                # Group two ball vertices by curvature
-                curv2_sort = sorted(curv2[5:], key=lambda x: x[1])
-                two_ball_grouped = [[curv2_sort[0][0]]]  # Two ball vertices grouped by curvature
-                previous_curv = curv2_sort[0][1]
-                for i in range(1, len(curv2_sort)):
-                    if curv2_sort[i][1] != previous_curv:
-                        two_ball_grouped.append([curv2_sort[i][0]])
-                        previous_curv = curv2_sort[i][1]
-                    else:
-                        two_ball_grouped[-1].append(curv2_sort[i][0])
-                # Permute vertices to match networks
-                all_vertices_grouped = [[1, 2, 3, 4]] + two_ball_grouped
-                all_vertices_grouped.sort(key=len)
-                num_perms = []
-                for i in range(len(two_ball_grouped)):
-                    num = len(two_ball_grouped[i])
-                    if num == 1:
-                        perms = [tuple(two_ball_grouped[i])]
-                        vertex_perms.append(perms)
-                    if num > 1:
-                        perms = list(list(permutations(two_ball_grouped[i])))
-                        vertex_perms.append(perms)
-                    # Remove empty sets from degrees
-                    num_perms.append(len(two_ball_grouped[i]))
-                # Duplicate and merge permutations for each partition to get all permutations
-                num_perms = map(lambda x: math.factorial(x), num_perms)
-                num_perms.append(len(vertex_perms[0]))
-                vertex_perms.sort(key=len)
-                num_perms.sort()
-                total_perms = reduce(lambda x, y: x * y, num_perms, 1)
-                all_perms = [list(chain.from_iterable(list(repeat(vertex_perms[0], total_perms / num_perms[0]))))]
-                individual_repeats = num_perms[0]
-                for i in range(1, len(num_perms)):
-                    perms = []
-                    for j in range(len(vertex_perms[i])):
-                        perms.extend(list(repeat(vertex_perms[i][j], individual_repeats)))
-                    all_perms.append(list(chain.from_iterable(list(repeat(perms, total_perms / len(perms))))))
-                    individual_repeats = individual_repeats * num_perms[i]
+                            # GENERATE PERMUTATIONS #
+                            # Add one ball permutations
+                            vertex_perms = [get_oneball_perms(g2[0])]
+                            # Group two ball vertices by curvature
+                            curv2_sort = sorted(curv2[5:], key=lambda x: x[1])
+                            two_ball_grouped = [[curv2_sort[0][0]]]  # Two ball vertices grouped by curvature
+                            previous_curv = curv2_sort[0][1]
+                            for i in range(1, len(curv2_sort)):
+                                if curv2_sort[i][1] != previous_curv:
+                                    two_ball_grouped.append([curv2_sort[i][0]])
+                                    previous_curv = curv2_sort[i][1]
+                                else:
+                                    two_ball_grouped[-1].append(curv2_sort[i][0])
+                            # Permute vertices to match networks
+                            all_vertices_grouped = [[1, 2, 3, 4]] + two_ball_grouped
+                            num_perms = []
+                            for i in range(len(two_ball_grouped)):
+                                num = len(two_ball_grouped[i])
+                                if num == 1:
+                                    perms = [tuple(two_ball_grouped[i])]
+                                    vertex_perms.append(perms)
+                                if num > 1:
+                                    perms = list(list(permutations(two_ball_grouped[i])))
+                                    vertex_perms.append(perms)
+                                # Remove empty sets from degrees
+                                num_perms.append(len(two_ball_grouped[i]))
+                            # Duplicate and merge permutations for each partition to get all permutations
+                            num_perms = map(lambda x: math.factorial(x), num_perms)
+                            num_perms.append(len(vertex_perms[0]))
+                            vertex_perms.sort(key=len)
+                            num_perms.sort()
+                            total_perms = reduce(lambda x, y: x * y, num_perms, 1)
+                            all_perms = [list(chain.from_iterable(list(repeat(vertex_perms[0], total_perms / num_perms[0]))))]
+                            individual_repeats = num_perms[0]
+                            for i in range(1, len(num_perms)):
+                                perms = []
+                                for j in range(len(vertex_perms[i])):
+                                    perms.extend(list(repeat(vertex_perms[i][j], individual_repeats)))
+                                all_perms.append(list(chain.from_iterable(list(repeat(perms, total_perms / len(perms))))))
+                                individual_repeats = individual_repeats * num_perms[i]
 
-                # COMPARISON #
-                # Compare permutations of the second network with the first network
-                for n in range(1, total_perms):
-                    network_cmp = copy.deepcopy(network2)
-                    cmp_keys = network2.keys()
-                    for i in range(len(all_vertices_grouped)):
-                        for j in range(len(all_vertices_grouped[i])):
-                            vertex1 = all_vertices_grouped[i][j]
-                            vertex2 = all_perms[i][n][j]
-                            if vertex1 != vertex2:
-                                # Switch keys
-                                cmp_keys[vertex1] = vertex2
-                                for k in range(len(network1)):
-                                    network_cmp[k] = map(lambda x: -vertex2 if x == vertex1 else x, network_cmp[k])
-                    # Combine switched keys and values
-                    network_cmp_cmplt = copy.deepcopy(network_cmp)
-                    for k in range(len(cmp_keys)):
-                        network_cmp_cmplt[cmp_keys[k]] = sorted(map(abs, network_cmp[k]))
-                    if network1 == network_cmp_cmplt:
-                        return True
+                            # COMPARISON #
+                            # Compare permutations of the second network with the first network
+                            for n in range(1, total_perms):
+                                network_cmp = copy.deepcopy(network2)
+                                cmp_keys = network2.keys()
+                                for i in range(len(vertex_perms)):
+                                    for j in range(len(vertex_perms[i][0])):
+                                        vertex1 = vertex_perms[i][0][j]
+                                        vertex2 = all_perms[i][n][j]
+                                        if vertex1 != vertex2:
+                                            # Switch keys
+                                            cmp_keys[vertex1] = vertex2
+                                            for k in range(len(network1)):
+                                                network_cmp[k] = map(lambda x: -vertex2 if x == vertex1 else x, network_cmp[k])
+                                # Combine switched keys and values
+                                network_cmp_cmplt = copy.deepcopy(network_cmp)
+                                for k in range(len(cmp_keys)):
+                                    network_cmp_cmplt[cmp_keys[k]] = sorted(map(abs, network_cmp[k]))
+                                if network1 == network_cmp_cmplt:
+                                    return True
 
         # RECENTERING #
         # Recenter unless only comparing graphs with fixed centers
@@ -586,7 +591,7 @@ def generate_twoball(avail_outdeg, part, twoball, all_twoballs, vertices):
 
 
 def generate_incomp_twoballs():
-    """ Generates all incomplete two balls grouped by one ball
+    """ Generates all incomplete two balls with non-negative curvature grouped by one ball
 
     :return: list of lists of two balls
     """
@@ -619,13 +624,35 @@ def generate_incomp_twoballs():
             twoball = [oneball]
             all_twoballs = []
             generate_twoball(avail_outdeg, part, twoball, all_twoballs, vertices)
-            unique_twoballs = [all_twoballs[0]]
-            # Remove isomorphisms
-            for graph1 in all_twoballs[1:]:
-                for graph2 in unique_twoballs:
-                    if not iso(graph1, graph2):
-                        unique_twoballs.append(graph1)
-            twoballs_incomp_oneball += unique_twoballs
+            # Set first non-negative two ball as first unique two ball
+            unique_twoballs = []
+            first_twoball_index = 0
+            for i in range(len(all_twoballs)):
+                curv = curvature.curv_calc(adjmat(all_twoballs[i]), 0)
+                if curv >= 0:
+                    first_twoball_index = i+1
+                    all_twoballs[i][1].sort(key=lambda x: x[:])
+                    unique_twoballs = [all_twoballs[i]]
+                    break
+            # If there are no non-negative two balls, skip to next partition
+            if unique_twoballs:
+                # Remove isomorphisms
+                for graph1 in all_twoballs[first_twoball_index:]:
+                    # If graph is non-negative check if it is unique
+                    curv = curvature.curv_calc(adjmat(graph1), 0)
+                    if curv >= 0:
+                        graph1[1].sort(key=lambda x: x[:])
+                        isomorphic = False
+                        for graph2 in unique_twoballs:
+                            if iso(graph1, graph2, True):
+                                isomorphic = True
+                                break
+                        # If graph is unique add it
+                        if not isomorphic:
+                            unique_twoballs.append(graph1)
+                for twoball in unique_twoballs:
+                    twoball[1].sort(key=len, reverse=True)
+                twoballs_incomp_oneball += unique_twoballs
         twoballs_incomp.append(twoballs_incomp_oneball)
     twoballs_incomp.append([[[1, 1, 1, 1, 1, 1], [], []]])
     return twoballs_incomp
@@ -661,11 +688,31 @@ def complete_twoball(g):
         for graph in complete_graphs:
             graph[2].sort(key=lambda x: x[:])
             sorted_graphs.append(graph)
+        # Set first non-negative two ball as first unique two ball
+        unique_twoballs = []
+        first_twoball_index = 0
+        for i in range(len(complete_graphs)):
+            curv = curvatures(complete_graphs[i])
+            only_curvatures = list(izip(*curv))[1]
+            if min(only_curvatures) >= 0:
+                first_twoball_index = i + 1
+                complete_graphs[i][2].sort(key=lambda x: x[:])
+                unique_twoballs = [complete_graphs[i]]
+                break
         # Remove isomorphisms
-        unique_twoballs = [sorted_graphs[0]]
-        for graph1 in sorted_graphs[1:]:
-            for graph2 in unique_twoballs:
-                if not iso(graph1, graph2):
+        for graph1 in complete_graphs[first_twoball_index:]:
+            # If graph is non-negative check if it is unique
+            curv = curvatures(graph1)
+            only_curvatures = list(izip(*curv))[1]
+            if min(only_curvatures) >= 0:
+                graph1[2].sort(key=lambda x: x[:])
+                isomorphic = False
+                for graph2 in unique_twoballs:
+                    if iso(graph1, graph2):
+                        isomorphic = True
+                        break
+                # If graph is unique add it
+                if not isomorphic:
                     unique_twoballs.append(graph1)
         return unique_twoballs
 
@@ -729,11 +776,14 @@ def generate_non_neg_twoballs():
     # Remove isomorphisms
     unique_graphs = [twoballs_comp_non_neg[0]]
     for graph1 in twoballs_comp_non_neg[1:]:
+        isomorphic = False
         for graph2 in unique_graphs:
-            if not iso(graph1[0], graph2[0]):
-                unique_graphs.append(graph1)
-            else:
-                print "an iso exists!"
+            if iso(graph1[0], graph2[0]):
+                isomorphic = True
+        if not isomorphic:
+            unique_graphs.append(graph1)
+        else:
+            print "an iso exists!" #DELETE IF DOESN'T PRINT#
     return unique_graphs
 
 
@@ -940,8 +990,13 @@ def write_to_file(all_graphs):
 # graph2 = standardise_oneball(graph2)
 # print iso(graph1, graph2)
 
-graph1 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
-print graph1
-graph2 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], []]
+# graph1 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], [[5, 6], [5, 7], [6, 8], [7, 8]]]
+# print graph1
+# graph2 = [[1, 0, 0, 0, 0, 1], [[1, 3], [1, 4], [2, 3], [2, 4]], []]
 twoballs = generate_incomp_twoballs()
-print twoballs
+for oneball in twoballs:
+    print oneball
+
+# graph1 = [[0, 0, 0, 0, 0, 0], [[1, 2, 4], [1], [1], [2], [2], [3], [3], [3], [4], [4]], []]
+# graph2 = [[0, 0, 0, 0, 0, 0], [[1, 2, 3], [1], [1], [2], [2], [3], [3], [4], [4], [4]], []]
+# print iso(graph1,graph2)
